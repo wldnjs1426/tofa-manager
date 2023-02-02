@@ -146,12 +146,11 @@ const UserList = () => {
                 "searchText":""
             })
             .then(function (response) {
-                console.log(response)
                 const data = response.data
                 const rows = []
                 data.map((item,idx) => {
                     rows.push({
-                        id: idx,
+                        id: item.account_id,
                         name: item.username,
                         belong: item.dept,
                         email: item.email,
@@ -159,7 +158,6 @@ const UserList = () => {
                         authority: item.role_name,
                         authorityList: item.resourceList,
                         authorityCode: item.resourceCodeList,
-                        accountId: item.account_id,
                         joinDate: item.join_date,
                     })
                 })
@@ -197,7 +195,7 @@ const UserList = () => {
     const userModify = () => {
 
         const codeList = String(checkedList.join())
-        const statusId = String(status.accountId)
+        const statusId = String(status.id)
 
         axios.post(`http://27.96.134.216:3000/api/admin/member-modification`,
             {
@@ -215,7 +213,7 @@ const UserList = () => {
     }
 
     const columns = [
-        { field: 'id', headerName: '순번', width: 70},
+        { field: 'id', headerName: 'iD', width: 70},
         { field: 'name', headerName: '이름', width: 130, renderCell: (params) => (
                 <strong onClick={() => handleEvent(params)} style={{cursor:'pointer'}}>
                     {params.row.name}
@@ -227,8 +225,7 @@ const UserList = () => {
         { field: 'authority', headerName: '권한', width: 200},
         { field: 'authorityList', headerName: '권한 목록', width: 900},
         { field: 'authorityCode', headerName: '권한 번호', hide:true, hideable: false },
-        { field: 'accountId', headerName: '아이디', hide:true, hideable: false },
-        { field: 'joinDate', headerName: '가입 일시', type: 'dateTime', width: 400,
+        { field: 'joinDate', headerName: '가입 일시', type: 'dateTime', width: 300,
             valueGetter: ({ value }) => value && new Date(value)
         },
     ];
@@ -349,7 +346,7 @@ const UserList = () => {
                                         }} defaultChecked={status && status.authorityCode.includes('25')} size="small" value={25}/>} label="운행" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
-                                        }} defaultChecked={status && status.authorityCode.includes('37')} size="small" value={37}/>} label="운행(CAP)" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
+                                        }} defaultChecked={status && status.authorityCode.includes('37')} size="small" value={37}/>} label="운행(CAB)" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
                                         }} defaultChecked={status && status.authorityCode.includes('26')} size="small" value={26}/>} label="퍼포먼스" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
@@ -369,7 +366,7 @@ const UserList = () => {
                                         }} defaultChecked={status && status.authorityCode.includes('28')} size="small" value={28}/>} label="고장 분석" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
-                                        }} defaultChecked={status && status.authorityCode.includes('38')} size="small" value={38}/>} label="고장 분석(CAP)" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
+                                        }} defaultChecked={status && status.authorityCode.includes('38')} size="small" value={38}/>} label="고장 분석(CAB)" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
                                         }} defaultChecked={status && status.authorityCode.includes('30')} size="small" value={30}/>} label="트렌트(고장)" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
@@ -401,6 +398,7 @@ const UserList = () => {
                 <FaultCodeDiv>
                     <ThemeProvider theme={theme}>
                         <UserHeader/>
+                        {/*총 {row.length}개의 검색이 완료되었습니다.*/}
 
                         <DataGridPremium
                             disableSelectionOnClick
@@ -413,6 +411,7 @@ const UserList = () => {
                                 setUserId(newSelectionModel);
                             }}
                             components={{ Toolbar: CustomToolbar }}
+                            sx={{borderTop: '3px solid #1976d2',borderBottomColor: '#1976d2',borderLeft:'none',borderRight:'none',}}
                         />
 
                     </ThemeProvider>

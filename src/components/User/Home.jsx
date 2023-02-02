@@ -40,14 +40,14 @@ const ButtonDiv = styled.div`
     margin:0 auto;
 `
 const columns = [
-    { field: 'id', headerName: '순번', width: 70},
+    { field: 'id', headerName: 'ID', width: 70},
     { field: 'name', headerName: '이름', width: 130 },
     { field: 'belong', headerName: '소속', width: 200 },
     { field: 'email', headerName: '이메일', width: 400},
     { field: 'phone', headerName: '연락처', width: 200},
     { field: 'authority', headerName: '권한', width: 200},
     { field: 'authorityList', headerName: '권한 목록', width: 900},
-    { field: 'joinDate', headerName: '가입 일시', type: 'dateTime', width: 400,
+    { field: 'joinDate', headerName: '가입 일시', type: 'dateTime', width: 300,
         valueGetter: ({ value }) => value && new Date(value)
     }
 ];
@@ -71,16 +71,20 @@ const Home = () => {
     //유저아이디 체크
     const [userCheck, setUserCheck] = useState([]);
     const [row, setRow] = useState([]);
+    const [modify,setModify] = useState(false)
 
     useEffect(() =>{
-        axios.post(`http://27.96.134.216:3000/api/admin/wait-list`)
+        axios.post(`http://27.96.134.216:3000/api/admin/wait-list`,{
+            "startDate":"",
+            "endDate":""
+        })
             .then(function (response) {
                 const data = response.data
                 const rows = []
                 data.map((item,idx) => {
                     if(item.allowance){
                         rows.push({
-                            id: idx,
+                            id: item.account_id,
                             name: item.username,
                             belong: item.dept,
                             email: item.email,
@@ -96,30 +100,35 @@ const Home = () => {
             .catch(function (error) {
                 console.log(error);
             });
-    },[])
+    },[modify])
 
     //가입승인함수
     const confirmJoin = () => {
-        console.log(userCheck)
         axios.post(`http://27.96.134.216:3000/api/admin/approval-join`,{
-            "account_ids":userCheck
+            "account_ids":userCheck.join()
         })
             .then(function (response) {
                 alert('가입 승인이 완료되었습니다.')
+                setModify(modify ? false : true)
             })
             .catch(function (error) {
                 console.log(error);
             });
     }
 
-    const handleEvent = (
-        params, // GridRowParams
-        event, // MuiEvent<React.MouseEvent<HTMLElement>>
-        details, // GridCallbackDetails
-    ) => {
-        console.log(params)
-
-    };
+    const rejectJoin = () => {
+        console.log(userCheck.join())
+        axios.post(`http://27.96.134.216:3000/api/admin/removal-account`,{
+            "account_ids":userCheck.join()
+        })
+            .then(function (response) {
+                alert('가입 거절이 완료되었습니다.')
+                setModify(modify ? false : true)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
 
     return (
         <div>
@@ -127,9 +136,9 @@ const Home = () => {
                 <FaultCodeDiv>
                     <ThemeProvider theme={theme}>
                         <UserHeader/>
+                        {/*총 {row.length}개의 검색이 완료되었습니다.*/}
 
                         <DataGridPremium
-                            onRowClick={handleEvent}
                             rows={row}
                             columns={columns}
                             pageSize={10}
@@ -137,14 +146,15 @@ const Home = () => {
                             checkboxSelection
                             onSelectionModelChange={(newSelectionModel) => {
                                 setUserCheck(
-                                    row.map()
+                                    newSelectionModel
                                 );
-                            }}
+                            }} gc
                             components={{ Toolbar: CustomToolbar }}
+                            sx={{borderTop: '3px solid #1976d2',borderBottomColor: '#1976d2',borderLeft:'none',borderRight:'none',}}
                         />
                         <ButtonDiv>
                             <Button variant="outlined" startIcon={<CheckIcon />} onClick={confirmJoin} disabled={userCheck.length === 0 ? true : false}>가입 승인</Button>
-                            <Button variant="outlined" startIcon={<ClearIcon />} disabled={userCheck.length === 0 ? true : false}>가입 거절</Button>
+                            <Button variant="outlined" startIcon={<ClearIcon />} onClick={rejectJoin} disabled={userCheck.length === 0 ? true : false}>가입 거절</Button>
                         </ButtonDiv>
 
                     </ThemeProvider>

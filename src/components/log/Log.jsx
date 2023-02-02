@@ -12,6 +12,7 @@ import {
     koKR
 } from '@mui/x-data-grid-premium';
 import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -82,13 +83,21 @@ function CustomToolbar() {
     );
 }
 
+const dateFormater = (date) => {
+    let dateFormat2 = date.getFullYear() +
+        '-' + ( (date.getMonth()+1) < 9 ? "0" + (date.getMonth()+1) : (date.getMonth()+1) )+
+        '-' + ( (date.getDate()) < 9 ? "0" + (date.getDate()) : (date.getDate()) );
+    return dateFormat2;
+}
+
+//Log 컴포넌트
 const Log = () => {
 
     //유저아이디 체크
     const [userCheck, setUserCheck] = useState([]);
     //검색조건 시작날짜와 종료날짜
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(dateFormater(new Date()));
+    const [endDate, setEndDate] = useState(dateFormater(new Date()));
     //팝업open
     const [open, setOpen] = useState(false);
     //접속로그 row데이터
@@ -97,6 +106,8 @@ const Log = () => {
     const [menuRow, setMenuRow] = useState([]);
     //레이어팝업close
     const handleClose = () => setOpen(false);
+
+
 
     useEffect(() => {
         axios.post(`http://27.96.134.216:3000/log/user-log-list`, {
@@ -137,7 +148,6 @@ const Log = () => {
         { field: 'loginIp', headerName: 'IP', width: 400},
         { field: 'loginTime', headerName: '로그인시간', width: 400},
         { field: 'accountId', headerName: '아이디', hide:true, hideable: false }
-
     ];
 
     //메뉴접속로그컬럼 정의
@@ -175,7 +185,6 @@ const Log = () => {
     const handleEvent = (
         params // GridRowParams
     ) => {
-        console.log(params)
         menuLog(params);
         setOpen(true);
     };
@@ -214,7 +223,7 @@ const Log = () => {
 
                     <SeachDiv>
                         <DateDiv>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
                                 <DatePicker
                                     label="시작 날짜"
                                     renderInput={(params) => <TextField {...params} />}
@@ -231,7 +240,7 @@ const Log = () => {
                             <div style={{width:'50px',textAlign:'center'}}>
                                 ~
                             </div>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
                                 <DatePicker
                                     label="종료 날짜"
                                     renderInput={(params) => <TextField {...params} />}
@@ -248,7 +257,7 @@ const Log = () => {
                         </DateDiv>
 
                     </SeachDiv>
-
+                    총 {row.length}개의 검색이 완료되었습니다.
                     <ThemeProvider theme={theme}>
                         <DataGridPremium
                             rows={row}
