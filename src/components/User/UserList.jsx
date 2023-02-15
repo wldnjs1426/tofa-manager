@@ -9,8 +9,10 @@ import styled from 'styled-components'
 import {useCallback, useState, useEffect} from "react";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CheckIcon from '@mui/icons-material/Check';
-import {Button,AppBar, Tabs, Tab, Toolbar, IconButton} from "@material-ui/core";
-import Logo from '../../images/logo.png';
+import ClearIcon from '@mui/icons-material/Clear';
+
+import {AppBar, Tabs, Tab, Toolbar, IconButton} from "@material-ui/core";
+import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
@@ -23,7 +25,8 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import UserHeader from './UserHeader';
-import axios from 'axios'
+import axios from 'axios';
+
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
@@ -39,7 +42,7 @@ const GridDiv = styled.div`
 `
 const FaultCodeDiv = styled.div`
     width:98%;
-    height:800px;
+    height:650px;
 `
 const SubjectDiv = styled.div`
     width:10%;
@@ -57,11 +60,11 @@ const ButtonDiv = styled.div`
     margin:0 auto;
 `
 const ModalDiv = styled.div`
-    width:50%;
-    height:70%;
+    width:1200px;
+    height:771px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     background-color:white;
     position: absolute;
     top: 50%;
@@ -77,26 +80,37 @@ const ModalHeader = styled.header`
 
 const Table = styled.table`
     width: 90%;
-    height: 80%;
     margin:0 auto;
     margin-top:20px;
-    border-radius:10px;
-    border:1px solid lightgray;
-    font-size:10px;
+    border-top:1px solid lightgray;
+    border-bottom:1px solid lightgray;
+    font-size:14px;
 `
 
 const SubjectTd = styled.td`
-    width: 30%;
-    height: 10%;
-    border-right: 1px solid lightgray;
-    border-bottom: 1px solid lightgray;
+    width: 100%;
+    height: 60px;
     margin-left:10%;
-    vertical-align:center;
-    text-align:center;
+    text-align:right;
+    font-weight:400;
+    display:flex;
+    justify-content:end;
+    align-items:center;
+    font-weight:400;
+`
+
+const AuthorityTd = styled.td`
+    width: 100%;
+    height:30px;
+    margin-left:10%;
+    text-align:right;
+    font-weight:400;
+    display:flex;
+    justify-content:end;
+    align-items:center;
+    font-weight:400;
 `
 const ContentsTd = styled.td`
-    height: 10%;
-    border-bottom: 1px solid lightgray;
 `
 const MarginDiv = styled.div`
     margin-left:3%;
@@ -123,6 +137,17 @@ const theme = createTheme(
     koKR, // x-data-grid translations
 )
 
+const btnTheme = createTheme({
+    palette: {
+        reject: {
+            main: '#BBBBBB',
+            contrastText: '#fff',
+        },confirm:{
+            main: '#008CCF',
+            contrastText: '#fff',
+        }
+    },
+});
 
 const UserList = () => {
 
@@ -241,31 +266,15 @@ const UserList = () => {
                     aria-describedby="modal-modal-description"
                 >
                     <ModalDiv>
-                        <AppBar position="static" sx={{display:'inline'}}>
-                            <Box sx={{display:'flex',justifyContent:'space-between', alignItems:'center'}}>
-                                <Box sx={{marginLeft:'1%'}}>
-                                    <Toolbar disableGutters>
-                                        <Typography
-                                            variant="h6"
-                                            noWrap
-                                            component="a"
-                                            href="/"
-                                            sx={{
-                                                mr: 2,
-                                                display: { xs: 'none', md: 'flex' },
-                                                fontFamily: 'monospace',
-                                                fontWeight: 700,
-                                                letterSpacing: '.3rem',
-                                                color: 'inherit',
-                                                textDecoration: 'none'
-                                            }}
-                                        >
-                                            <Img src={Logo} alt="BigCo Inc. logo"/>
-                                        </Typography>
-                                    </Toolbar>
-                                </Box>
-                            </Box>
-                        </AppBar>
+                       <div style={{
+                           width:'90%',
+                           margin:'0 auto',
+                           fontWeight: '700',
+                           fontSize: '25px',
+                           lineHeight: '25px'
+                       }}>
+                           회원 정보 수정
+                       </div>
                         <Table>
                             <tbody>
                             <tr>
@@ -273,7 +282,11 @@ const UserList = () => {
                                     이름
                                 </SubjectTd>
                                 <ContentsTd>
-                                    <MarginDiv>{status && status.name}</MarginDiv>
+                                    <MarginDiv>
+                                        <TextField InputProps={{
+                                            readOnly: true,
+                                        }}  defaultValue={status && status.name} size='small' sx={{width:'450px',height:'39px'}}/>
+                                        </MarginDiv>
                                 </ContentsTd>
                             </tr>
                             <tr>
@@ -285,8 +298,9 @@ const UserList = () => {
                                         <Select
                                         labelId="demo-customized-select-label"
                                         id="demo-customized-select"
-                                        sx={{width:'200px', height:'50%', fontSize:'0.5rem'}}
+                                        sx={{width:'450px', height:'50%'}}
                                         defaultValue={status && status.belong}
+                                        size='small'
                                         >
                                             <MenuItem value={'차량'}>차량</MenuItem>
                                             <MenuItem value={'승무'}>승무</MenuItem>
@@ -301,7 +315,11 @@ const UserList = () => {
                                     사용자 이메일
                                 </SubjectTd>
                                 <ContentsTd>
-                                    <MarginDiv>{status && status.email}</MarginDiv>
+                                    <MarginDiv>
+                                        <TextField InputProps={{
+                                            readOnly: true,
+                                        }}  defaultValue={status && status.email} size='small' sx={{width:'450px',height:'39px'}}/>
+                                    </MarginDiv>
                                 </ContentsTd>
                             </tr>
                             <tr>
@@ -309,7 +327,11 @@ const UserList = () => {
                                     휴대전화 번호
                                 </SubjectTd>
                                 <ContentsTd>
-                                    <MarginDiv>{status && status.phone}</MarginDiv>
+                                    <MarginDiv>
+                                        <TextField InputProps={{
+                                            readOnly: true,
+                                        }}  defaultValue={status && status.phone} size='small' sx={{width:'450px',height:'39px'}}/>
+                                    </MarginDiv>
                                 </ContentsTd>
                             </tr>
                             <tr>
@@ -321,9 +343,11 @@ const UserList = () => {
                                         <Select
                                     labelId="demo-customized-select-label"
                                     id="demo-customized-select"
-                                    sx={{width:'200px', height:'50%', fontSize:'0.5rem'}}
+                                    sx={{width:'450px', height:'50%'}}
                                     defaultValue={status && status.authority}
-                                >
+                                    size='small'
+
+                                        >
                                     <MenuItem value={'ROLE_ADMIN'}>ADMIN</MenuItem>
                                     <MenuItem value={'ROLE_MANAGER'}>MANAGER</MenuItem>
                                     <MenuItem value={'ROLE_USER'}>USER</MenuItem>
@@ -332,57 +356,61 @@ const UserList = () => {
                                 </ContentsTd>
                             </tr>
                             <tr>
-                                <SubjectTd>
-                                    권한 목록
-                                </SubjectTd>
+                                <AuthorityTd>
+                                        권한 목록
+                                </AuthorityTd>
                                 <ContentsTd>
                                     <div style={{marginLeft:'3%',width:'100%',height:'100%'}}>
-                                        <FormLabel component="legend" sx={{color:'black',fontWeight:'bold',fontSize:'0.9rem'}}>모니터링</FormLabel>
+                                        <FormLabel component="legend" sx={{color:'black',fontWeight:'bold',fontSize:'0.9rem'}}></FormLabel>
+                                        <span style={{display:'inline-block',width:'90px', fontWeight:'400'}}>모니터링</span>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
-                                        }} defaultChecked={status && status.authorityCode.includes('23')} size="small" value={23}/>} label="개별 편성" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
+                                        }} defaultChecked={status && status.authorityCode.includes('23')} size="small" value={23}/>} label="개별 편성" sx={{width:'110px','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
-                                        }} defaultChecked={status && status.authorityCode.includes('25')} size="small" value={25}/>} label="운행" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
+                                        }} defaultChecked={status && status.authorityCode.includes('25')} size="small" value={25}/>} label="운행" sx={{width:'120px','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
-                                        }} defaultChecked={status && status.authorityCode.includes('37')} size="small" value={37}/>} label="운행(CAB)" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
+                                        }} defaultChecked={status && status.authorityCode.includes('37')} size="small" value={37}/>} label="운행(CAB)" sx={{width:'150px','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
-                                        }} defaultChecked={status && status.authorityCode.includes('26')} size="small" value={26}/>} label="퍼포먼스" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
-                                        <FormLabel component="legend" sx={{color:'black',fontWeight:'bold',fontSize:'0.9rem'}}>대시보드</FormLabel>
+                                        }} defaultChecked={status && status.authorityCode.includes('26')} size="small" value={26}/>} label="퍼포먼스" sx={{width:'120px','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
+                                        <FormLabel component="legend" sx={{color:'black',fontWeight:'bold',fontSize:'0.9rem'}}></FormLabel>
+                                        <span style={{display:'inline-block',width:'90px', fontWeight:'400'}}>대시보드 </span>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
-                                        }} defaultChecked={status && status.authorityCode.includes('27')} size="small" value={27}/>} label="고장 투데이" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
+                                        }} defaultChecked={status && status.authorityCode.includes('27')} size="small" value={27}/>} label="고장 투데이" sx={{width:'110px','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
-                                        }} defaultChecked={status && status.authorityCode.includes('36')} size="small" value={36}/>} label="고장 통계" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
-                                        <FormLabel component="legend" sx={{color:'black',fontWeight:'bold',fontSize:'0.9rem'}}>고장</FormLabel>
+                                        }} defaultChecked={status && status.authorityCode.includes('36')} size="small" value={36}/>} label="고장 통계" sx={{width:'120px','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
+                                        <FormLabel component="legend" sx={{color:'black',fontWeight:'bold',fontSize:'0.9rem'}}></FormLabel>
+                                        <span style={{display:'inline-block',width:'90px', fontWeight:'400'}}>고장</span>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
-                                        }} defaultChecked={status && status.authorityCode.includes('29')} size="small" value={29}/>} label="고장 이력" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
+                                        }} defaultChecked={status && status.authorityCode.includes('29')} size="small" value={29}/>} label="고장 이력" sx={{width:'110px','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
-                                        }} defaultChecked={status && status.authorityCode.includes('28')} size="small" value={28}/>} label="고장 분석" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
+                                        }} defaultChecked={status && status.authorityCode.includes('28')} size="small" value={28}/>} label="고장 분석" sx={{width:'120px','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
-                                        }} defaultChecked={status && status.authorityCode.includes('38')} size="small" value={38}/>} label="고장 분석(CAB)" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
+                                        }} defaultChecked={status && status.authorityCode.includes('38')} size="small" value={38}/>} label="고장 분석(CAB)" sx={{width:'150px','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
-                                        }} defaultChecked={status && status.authorityCode.includes('30')} size="small" value={30}/>} label="트렌트(고장)" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
+                                        }} defaultChecked={status && status.authorityCode.includes('30')} size="small" value={30}/>} label="트렌트(고장)" sx={{width:'120px','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
-                                        }} defaultChecked={status && status.authorityCode.includes('31')} size="small" value={31}/>} label="모델링(고장)" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
-                                        <FormLabel component="legend" sx={{color:'black',fontWeight:'bold',fontSize:'0.9rem'}}>진단</FormLabel>
+                                        }} defaultChecked={status && status.authorityCode.includes('31')} size="small" value={31}/>} label="모델링(고장)" sx={{width:'120px','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
+                                        <FormLabel component="legend" sx={{color:'black',fontWeight:'bold',fontSize:'0.9rem'}}></FormLabel>
+                                        <span style={{display:'inline-block',width:'90px', fontWeight:'400'}}>진단</span>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
-                                        }} defaultChecked={status && status.authorityCode.includes('32')} size="small" value={32}/>} label="편성 진단" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
+                                        }} defaultChecked={status && status.authorityCode.includes('32')} size="small" value={32}/>} label="편성 진단" sx={{width:'110px','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
-                                        }} defaultChecked={status && status.authorityCode.includes('33')} size="small" value={33}/>} label="트렌드(진단)" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
+                                        }} defaultChecked={status && status.authorityCode.includes('33')} size="small" value={33}/>} label="트렌드(진단)" sx={{width:'120px','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
                                         <FormControlLabel control={<Checkbox name={'resource'} onChange={e => {
                                             onCheckedElement(e.target.checked, e.target.value);
-                                        }} defaultChecked={status && status.authorityCode.includes('34')} size="small" value={34}/>} label="모델링(진단)" sx={{width:'20%','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
+                                        }} defaultChecked={status && status.authorityCode.includes('34')} size="small" value={34}/>} label="모델링(진단)" sx={{width:'150px','& .MuiTypography-root': { fontSize: '0.8rem' }}}/>
 
                                     </div>
                                 </ContentsTd>
@@ -390,8 +418,11 @@ const UserList = () => {
                             </tbody>
                         </Table>
                         <ButtonDiv>
-                            <Button variant="outlined" startIcon={<CheckIcon />} onClick={()=>userModify()}>수정 완료</Button>
+                            <ThemeProvider theme={btnTheme}>
+                                <Button variant="contained" color='confirm' startIcon={<CheckIcon />} onClick={()=>userModify()} sx={{width: '160px',height:'50px'}}>수정 완료</Button>
+                                <Button variant="contained" color="reject" startIcon={<ClearIcon />} onClick={()=>handleClose()} sx={{width: '160px',height:'50px'}}>목록으로</Button>
 
+                            </ThemeProvider>
                         </ButtonDiv>
                     </ModalDiv>
                 </Modal>
@@ -411,7 +442,8 @@ const UserList = () => {
                                 setUserId(newSelectionModel);
                             }}
                             components={{ Toolbar: CustomToolbar }}
-                            sx={{borderTop: '3px solid #1976d2',borderBottomColor: '#1976d2',borderLeft:'none',borderRight:'none',}}
+                            sx={{borderTop: '3px solid #008CCF',borderBottomColor: '#008CCF',borderLeft:'none',borderRight:'none',}}
+
                         />
 
                     </ThemeProvider>

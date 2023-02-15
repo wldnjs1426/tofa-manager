@@ -9,7 +9,7 @@ import {useCallback, useState, useEffect} from "react";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
-import {Button} from "@material-ui/core";
+import Button from '@mui/material/Button';
 import UserHeader from './UserHeader';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
@@ -22,7 +22,7 @@ const GridDiv = styled.div`
 `
 const FaultCodeDiv = styled.div`
     width:98%;
-    height:800px;
+    height:650px;
 `
 const SubjectDiv = styled.div`
     width:10%;
@@ -66,6 +66,18 @@ const theme = createTheme(
     koKR, // x-data-grid translations
 )
 
+const buttonTheme = createTheme({
+    palette: {
+        reject: {
+            main: '#BBBBBB',
+            contrastText: '#fff',
+        },confirm:{
+            main: '#008CCF',
+            contrastText: '#fff',
+        }
+    },
+});
+
 const Home = () => {
 
     //유저아이디 체크
@@ -100,10 +112,38 @@ const Home = () => {
             .catch(function (error) {
                 console.log(error);
             });
+
+        axios.post(`http://27.96.134.216:3000/api/admin/login`,{
+            "userId":"snut97@hmit.co.kr",
+            "password":"pass"
+        })
+            .then(function (response) {
+                console.log(response)
+                axios.post(`http://27.96.134.216:3000/api/admin/check`,{
+                    "userId":"snut97@hmit.co.kr",
+                    "password":"pass"
+                })
+                    .then(function (response) {
+                        console.log(response)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+
+
     },[modify])
 
     //가입승인함수
     const confirmJoin = () => {
+        if(userCheck.length === 0){
+            alert('사용자를 선택해 주세요')
+            return
+        }
         axios.post(`http://27.96.134.216:3000/api/admin/approval-join`,{
             "account_ids":userCheck.join()
         })
@@ -117,7 +157,11 @@ const Home = () => {
     }
 
     const rejectJoin = () => {
-        console.log(userCheck.join())
+        if(userCheck.length === 0){
+            alert('사용자를 선택해 주세요')
+            return
+        }
+
         axios.post(`http://27.96.134.216:3000/api/admin/removal-account`,{
             "account_ids":userCheck.join()
         })
@@ -150,11 +194,13 @@ const Home = () => {
                                 );
                             }} gc
                             components={{ Toolbar: CustomToolbar }}
-                            sx={{borderTop: '3px solid #1976d2',borderBottomColor: '#1976d2',borderLeft:'none',borderRight:'none',}}
+                            sx={{borderTop: '3px solid #008CCF',borderBottomColor: '#008CCF',borderLeft:'none',borderRight:'none',borderRadius:'0px'}}
                         />
                         <ButtonDiv>
-                            <Button variant="outlined" startIcon={<CheckIcon />} onClick={confirmJoin} disabled={userCheck.length === 0 ? true : false}>가입 승인</Button>
-                            <Button variant="outlined" startIcon={<ClearIcon />} onClick={rejectJoin} disabled={userCheck.length === 0 ? true : false}>가입 거절</Button>
+                            <ThemeProvider theme={buttonTheme}>
+                                <Button variant="contained" color="confirm" startIcon={<CheckIcon />} onClick={confirmJoin} sx={{width: '160px',height:'50px'}}>가입 승인</Button>
+                                <Button variant="contained" color="reject" startIcon={<ClearIcon />} onClick={rejectJoin} sx={{width: '160px',height:'50px'}}>가입 거절</Button>
+                            </ThemeProvider>
                         </ButtonDiv>
 
                     </ThemeProvider>

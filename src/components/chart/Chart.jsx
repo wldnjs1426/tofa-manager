@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import {useState} from "react";
+import {useState,useEffect} from "react";
 import dayjs from 'dayjs';
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -18,6 +18,8 @@ import {
     GridToolbar,
     koKR
 } from '@mui/x-data-grid-premium';
+import axios from 'axios'
+
 
 const GridDiv = styled.div`
     display: flex;
@@ -102,6 +104,23 @@ const Chart = () => {
     const handleChange = (event) => {
         setDepartment(event.target.value);
     };
+
+    useEffect(() =>{
+        axios.post(`http://localhost:8080/api/machbase/signal/signal-list-result`,{
+            "startDate":"2023-02-07 17:10:54",
+            "endDate":"2023-02-07 17:15:54",
+            "trainNo":"210",
+            "signalId":"0010_4_1,0010_5_1,0037_0_1,0054_0_16,0056_0_8,0057_0_8,0060_0_8,0061_0_8,0062_0_8,0609_0_1,0609_1_3,0613_0_8,0615_0_8,0616_0_8,0701_0_1,0701_7_1,0702_0_1,0702_4_1,0704_2_1,0704_5_1,0705_0_1,0705_1_1,0705_4_1,0706_6_1,0706_7_1,0709_3_1,0709_4_1,0710_4_1,0712_7_1,0003_0_16,0005_0_8,0006_0_8"
+        })
+            .then(function (response) {
+                const data = response.data
+                console.log(response)
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    },[])
 
     const [options, setOptions] = useState({
         title: {

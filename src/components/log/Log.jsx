@@ -3,7 +3,7 @@ import {useCallback, useState, useEffect} from "react";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
-import {Button} from "@material-ui/core";
+import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import {
     DataGridPremium,
@@ -20,6 +20,14 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useDemoData } from '@mui/x-data-grid-generator';
 import axios from 'axios';
 import Modal from '@mui/material/Modal';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+
 
 const GridDiv = styled.div`
     display: flex;
@@ -39,8 +47,8 @@ const SubjectDiv = styled.div`
     font-weight:bold;
 `
 const SeachDiv = styled.div`
-    width:100%;
-    height: 150px;
+    width:30%;
+    height: 100px;
     display:flex;
     justify-content:space-around;
     align-items:center;
@@ -50,23 +58,25 @@ const SeachDiv = styled.div`
     margin-bottom:2%
 `
 const DateDiv = styled.div`
-    width:20%;
-    height:100px;
+    width:70%;
+    height:80px;
     display:flex;
     justify-content:space-around;
     align-items:center;
 `
 const ModalDiv = styled.div`
-    width:50%;
-    height:70%;
+    width:674px;
+    height:615px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     background-color:white;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    border:5px solid black;
+
 `
 
 const theme = createTheme(
@@ -90,6 +100,16 @@ const dateFormater = (date) => {
     return dateFormat2;
 }
 
+
+const buttonTheme = createTheme({
+    palette: {
+        confirm:{
+            main: '#008CCF',
+            contrastText: '#fff',
+        }
+    },
+});
+
 //Log 컴포넌트
 const Log = () => {
 
@@ -98,6 +118,8 @@ const Log = () => {
     //검색조건 시작날짜와 종료날짜
     const [startDate, setStartDate] = useState(dateFormater(new Date()));
     const [endDate, setEndDate] = useState(dateFormater(new Date()));
+    //클릭 유저 데이터
+    const [userData, setUserData] = useState();
     //팝업open
     const [open, setOpen] = useState(false);
     //접속로그 row데이터
@@ -107,7 +129,7 @@ const Log = () => {
     //레이어팝업close
     const handleClose = () => setOpen(false);
 
-
+    console.log(userData)
 
     useEffect(() => {
         axios.post(`http://27.96.134.216:3000/log/user-log-list`, {
@@ -123,6 +145,7 @@ const Log = () => {
                         name: item.username,
                         dept: item.dept,
                         loginTime: item.login_time,
+                        logOutTime: item.logout_time,
                         loginIp: item.login_ip,
                         email: item.email,
                         accountId:item.account_id
@@ -143,18 +166,19 @@ const Log = () => {
                     {params.row.name}
                 </strong>
             ] },
-        { field: 'email', headerName: '이메일', width: 400 },
-        { field: 'dept', headerName: '소속', width: 400 },
-        { field: 'loginIp', headerName: 'IP', width: 400},
-        { field: 'loginTime', headerName: '로그인시간', width: 400},
+        { field: 'email', headerName: '이메일', width: 300 },
+        { field: 'dept', headerName: '소속', width: 200 },
+        { field: 'loginIp', headerName: 'IP', width: 300},
+        { field: 'loginTime', headerName: '로그인시간', width: 300},
+        { field: 'logOutTime', headerName: '로그아웃시간', width: 300},
         { field: 'accountId', headerName: '아이디', hide:true, hideable: false }
     ];
 
     //메뉴접속로그컬럼 정의
     const menuColumns = [
-        { field: 'id', headerName: '순번', width: 70},
-        { field: 'name', headerName: '접속메뉴', width: 400 },
-        { field: 'date', headerName: '접속시간', width: 400 }
+        { field: 'id', headerName: '순번', width: 100},
+        { field: 'name', headerName: '접속메뉴', width: 200 },
+        { field: 'date', headerName: '접속시간', width: 200 }
     ];
 
     //메뉴접속로그컬럼 API 불러오기
@@ -182,9 +206,8 @@ const Log = () => {
             });
     }
 
-    const handleEvent = (
-        params // GridRowParams
-    ) => {
+    const handleEvent = (params) => {
+        setUserData(params)
         menuLog(params);
         setOpen(true);
     };
@@ -198,21 +221,69 @@ const Log = () => {
                     aria-describedby="modal-modal-description"
                 >
                     <ModalDiv>
-                        <ThemeProvider theme={theme}>
-                            <DataGridPremium
-                                onRowClick={handleEvent}
-                                rows={menuRow}
-                                columns={menuColumns}
-                                pageSize={10}
-                                rowsPerPageOptions={[10]}
-                                checkboxSelection
-                                onSelectionModelChange={(newSelectionModel) => {
-                                    setUserCheck(newSelectionModel);
-                                }}
-                                components={{ Toolbar: CustomToolbar }}
-                            />
+                        <div style={{
+                            width:'90%',
+                            margin:'0 auto',
+                            fontWeight: '700',
+                            fontSize: '25px',
+                            lineHeight: '25px',
+                            marginBottom:'3%',
 
-                        </ThemeProvider>
+                        }}>
+                            접속로그
+                        </div>
+                        <div style={{
+                            width:'90%',
+                            margin:'0 auto',
+                            lineHeight:'50px',
+                            borderTop: '1px solid gray',
+                            borderBottom: '1px solid gray',
+                        }}>
+                            <span style={{fontWeight:'bold', display:'inline-block', width:'60px', fontSize:'15px'}}> { userData ? userData.row.name : ''} </span>
+                            <span style={{color:'gray', fontSize:'16px', display:'inline-block', width:'20px',}}> | </span>
+                            <span style={{color:'gray', fontSize:'14px',}}> {userData ? userData.row.dept : ''} </span>
+
+                            {/*<ThemeProvider theme={theme}>*/}
+                            {/*    <DataGridPremium*/}
+                            {/*        onRowClick={handleEvent}*/}
+                            {/*        rows={menuRow}*/}
+                            {/*        columns={menuColumns}*/}
+                            {/*        pageSize={10}*/}
+                            {/*        rowsPerPageOptions={[10]}*/}
+                            {/*        onSelectionModelChange={(newSelectionModel) => {*/}
+                            {/*            setUserCheck(newSelectionModel);*/}
+                            {/*        }}*/}
+                            {/*        sx={{borderTop: '1px solid gray',borderBottomColor: 'gray',borderLeft:'none',borderRight:'none',}}*/}
+
+                            {/*    />*/}
+
+                            {/*</ThemeProvider>*/}
+                        </div>
+
+                        <TableContainer component={Paper} sx={{height:'70%'}}>
+                            <Table stickyHeader aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="center" sx={{color:'gray'}}>번호</TableCell>
+                                        <TableCell align="center" sx={{color:'gray'}}>접속메뉴</TableCell>
+                                        <TableCell align="center" sx={{color:'gray'}}>접속시간</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {menuRow.map((row) => (
+                                        <TableRow
+                                            key={row.id}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        >
+                                            <TableCell align="center" sx={{color:'gray'}}>{row.id}</TableCell>
+                                            <TableCell align="center" >{row.name}</TableCell>
+                                            <TableCell align="center" sx={{color:'gray'}}>{row.date}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+
                     </ModalDiv>
                 </Modal>
 
@@ -254,8 +325,11 @@ const Log = () => {
                                     }}
                                 />
                             </LocalizationProvider>
-                        </DateDiv>
 
+                            </DateDiv>
+                        {/*<ThemeProvider theme={buttonTheme}>*/}
+                        {/*    <Button variant="contained" color="confirm" startIcon={<CheckIcon />} sx={{width: '100px',height:'50px'}}>검색</Button>*/}
+                        {/*</ThemeProvider>*/}
                     </SeachDiv>
                     총 {row.length}개의 검색이 완료되었습니다.
                     <ThemeProvider theme={theme}>

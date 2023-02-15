@@ -3,7 +3,7 @@ import {AppBar,  Toolbar, IconButton} from "@material-ui/core";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import Typography from '@mui/material/Typography';
-import Logo from '../../images/logo.png';
+import Logo from '../../static/images/logo.png';
 import styled, { css } from 'styled-components';
 import {useCallback, useState} from "react";
 import { useNavigate } from 'react-router-dom';
@@ -77,7 +77,7 @@ const Header = () => {
                                 {/*        margin: '0 auto'}}>*/}
                                 {/*    </div>*/}
                                 {/*</div>*/}
-                                <Tab icon={<BarChartIcon sx={value === '/chart' ? { color: green[500] } : { color: green[0] }} />} iconPosition="start" label="접속 통계" value='/chart' sx={{fontWeight:'700'}}/>
+                                {/*<Tab icon={<BarChartIcon sx={value === '/chart' ? { color: green[500] } : { color: green[0] }} />} iconPosition="start" label="접속 통계" value='/chart' sx={{fontWeight:'700'}}/>*/}
                             </Tabs>
                         </Toolbar>
                     </Box>
