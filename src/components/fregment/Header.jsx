@@ -29,12 +29,23 @@ const Header = () => {
     const navigate = useNavigate();
 
     const [value, setValue] = useState(window.location.pathname === '/userlist' ? '/' : window.location.pathname);
+    const [result, setResult] = useState(false);
 
     
     const handleChange = (event, newValue) => {
         setValue(newValue);
         navigate(`${newValue}`);
     };
+
+    if(result){
+
+    }
+
+    const logout = () =>{
+        window.close();
+        // console.log(result)
+
+    }
 
     return(
             <AppBar position="static" color="transparent" sx={{display:'inline', backgroundColor:'white'}}>
@@ -81,19 +92,20 @@ const Header = () => {
                             </Tabs>
                         </Toolbar>
                     </Box>
-                    <Box sx={{marginRight:'1%'}}>
-                        <IconButton
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            color="inherit"
-                        >
-                            <span style={{'fontSize':'17px'}}>
-                                Logout
-                            </span>
+                    {/*<Box sx={{marginRight:'1%'}}>*/}
+                    {/*    <IconButton*/}
+                    {/*        onClick={()=>logout()}*/}
+                    {/*        aria-label="account of current user"*/}
+                    {/*        aria-controls="menu-appbar"*/}
+                    {/*        aria-haspopup="true"*/}
+                    {/*        color="inherit"*/}
+                    {/*    >*/}
+                    {/*        <span style={{'fontSize':'17px'}}>*/}
+                    {/*            Logout*/}
+                    {/*        </span>*/}
 
-                        </IconButton>
-                    </Box>
+                    {/*    </IconButton>*/}
+                    {/*</Box>*/}
                 </Box>
             </AppBar>
     )

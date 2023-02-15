@@ -129,8 +129,6 @@ const Log = () => {
     //레이어팝업close
     const handleClose = () => setOpen(false);
 
-    console.log(userData)
-
     useEffect(() => {
         axios.post(`http://27.96.134.216:3000/log/user-log-list`, {
             "startDate": startDate,
@@ -338,6 +336,11 @@ const Log = () => {
                             columns={columns}
                             pageSize={10}
                             rowsPerPageOptions={[10]}
+                            initialState={{
+                                sorting: {
+                                    sortModel: [{ field: 'loginTime', sort: 'desc' }],
+                                },
+                            }}
                             checkboxSelection
                             onSelectionModelChange={(newSelectionModel) => {
                                 setUserCheck(newSelectionModel);
