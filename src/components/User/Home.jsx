@@ -113,29 +113,6 @@ const Home = () => {
                 console.log(error);
             });
 
-        axios.post(`http://27.96.134.216:3000/api/admin/login`,{
-            "userId":"snut97@hmit.co.kr",
-            "password":"pass"
-        })
-            .then(function (response) {
-                console.log(response)
-                axios.post(`http://27.96.134.216:3000/api/admin/check`,{
-                    "userId":"snut97@hmit.co.kr",
-                    "password":"pass"
-                })
-                    .then(function (response) {
-                        console.log(response)
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
-
-
     },[modify])
 
     //가입승인함수

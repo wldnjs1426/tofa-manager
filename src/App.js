@@ -7,10 +7,10 @@ import { LicenseInfo } from '@mui/x-license-pro';
 
 LicenseInfo.setLicenseKey('eda985968670b41792906302d2418333Tz01Nzg2NCxFPTE3MDU1NjE3MzE4OTUsUz1wcmVtaXVtLExNPXN1YnNjcmlwdGlvbixLVj0y');
 function App() {
-  return (
+    return (
     <>
       <BrowserRouter>
-        <Header/>
+          {window.location.pathname === '/login' ? undefined : <Header/>}
 
         <Routes>
 
