@@ -22,7 +22,7 @@ const GridDiv = styled.div`
 `
 const FaultCodeDiv = styled.div`
     width:98%;
-    height:650px;
+    height:450px;
 `
 const SubjectDiv = styled.div`
     width:10%;
@@ -40,13 +40,13 @@ const ButtonDiv = styled.div`
     margin:0 auto;
 `
 const columns = [
-    { field: 'id', headerName: 'ID', width: 70},
-    { field: 'name', headerName: '이름', width: 130 },
-    { field: 'belong', headerName: '소속', width: 200 },
-    { field: 'email', headerName: '이메일', width: 400},
-    { field: 'phone', headerName: '연락처', width: 200},
-    { field: 'authority', headerName: '권한', width: 200},
-    { field: 'authorityList', headerName: '권한 목록', width: 900},
+    { field: 'id', headerName: 'ID', width: 70, hide:true, hideable: false},
+    { field: 'name', headerName: '이름', width:200 },
+    { field: 'belong', headerName: '소속', width: 100 },
+    { field: 'email', headerName: '이메일', width: 200},
+    { field: 'phone', headerName: '연락처', width: 150},
+    { field: 'authority', headerName: '권한', width: 150},
+    { field: 'authorityList', headerName: '권한 목록', width: 300},
     { field: 'joinDate', headerName: '가입 일시', type: 'dateTime', width: 300,
         valueGetter: ({ value }) => value && new Date(value)
     }
@@ -56,7 +56,7 @@ const CustomToolbar = () => {
     return (
         <GridToolbarContainer sx={{height:'30px'}}>
             <div style={{marginLeft:'0.2%'}}>
-                <GridToolbar />
+                <GridToolbar csvOptions={{ disableToolbarButton: true }}/>
             </div>
         </GridToolbarContainer>
     );
@@ -171,7 +171,7 @@ const Home = () => {
                                 );
                             }} gc
                             components={{ Toolbar: CustomToolbar }}
-                            sx={{borderTop: '3px solid #008CCF',borderBottomColor: '#008CCF',borderLeft:'none',borderRight:'none',borderRadius:'0px'}}
+                            sx={{fontSize:'13px',borderTop: '3px solid #008CCF',borderBottomColor: '#008CCF',borderLeft:'none',borderRight:'none',borderRadius:'0px'}}
                         />
                         <ButtonDiv>
                             <ThemeProvider theme={buttonTheme}>

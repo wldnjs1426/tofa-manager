@@ -25,6 +25,7 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import UserHeader from './UserHeader';
+import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
 
 
@@ -42,7 +43,7 @@ const GridDiv = styled.div`
 `
 const FaultCodeDiv = styled.div`
     width:98%;
-    height:650px;
+    height:450px;
 `
 const SubjectDiv = styled.div`
     width:10%;
@@ -66,6 +67,7 @@ const ModalDiv = styled.div`
     flex-direction: column;
     justify-content: center;
     background-color:white;
+    border:5px solid black;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -119,14 +121,26 @@ const MarginDiv = styled.div`
     display:flex;
     align-items:center;
 `
-
+const CloseDiv = styled.div`
+    width:40px;
+    height:40px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:absolute;
+    border:1px solid lightgray;
+    border-radius:5px;
+    top:15px;
+    right:15px;
+    cursor:pointer;
+`
 
 
 function CustomToolbar() {
     return (
         <GridToolbarContainer sx={{height:'30px'}}>
             <div style={{marginLeft:'0.2%'}}>
-                <GridToolbar />
+                <GridToolbar csvOptions={{ disableToolbarButton: true }}/>
             </div>
         </GridToolbarContainer>
     );
@@ -238,17 +252,17 @@ const UserList = () => {
     }
 
     const columns = [
-        { field: 'id', headerName: 'iD', width: 70},
-        { field: 'name', headerName: '이름', width: 130, renderCell: (params) => (
+        { field: 'id', headerName: 'iD', width: 70, hide:true, hideable: false},
+        { field: 'name', headerName: '이름', width: 200, renderCell: (params) => (
                 <strong onClick={() => handleEvent(params)} style={{cursor:'pointer'}}>
                     {params.row.name}
                 </strong>
             )},
-        { field: 'belong', headerName: '소속', width: 200 },
-        { field: 'email', headerName: '이메일', width: 400},
-        { field: 'phone', headerName: '연락처', width: 200},
-        { field: 'authority', headerName: '권한', width: 200},
-        { field: 'authorityList', headerName: '권한 목록', width: 900},
+        { field: 'belong', headerName: '소속', width: 100 },
+        { field: 'email', headerName: '이메일', width: 200},
+        { field: 'phone', headerName: '연락처', width: 150},
+        { field: 'authority', headerName: '권한', width: 150},
+        { field: 'authorityList', headerName: '권한 목록', width: 300},
         { field: 'authorityCode', headerName: '권한 번호', hide:true, hideable: false },
         { field: 'joinDate', headerName: '가입 일시', type: 'dateTime', width: 300,
             valueGetter: ({ value }) => value && new Date(value)
@@ -266,6 +280,9 @@ const UserList = () => {
                     aria-describedby="modal-modal-description"
                 >
                     <ModalDiv>
+                        <CloseDiv>
+                            <CloseIcon onClick={()=>handleClose()} sx={{width:'24px',height:'24px'}}/>
+                        </CloseDiv>
                        <div style={{
                            width:'90%',
                            margin:'0 auto',
@@ -442,7 +459,7 @@ const UserList = () => {
                                 setUserId(newSelectionModel);
                             }}
                             components={{ Toolbar: CustomToolbar }}
-                            sx={{borderTop: '3px solid #008CCF',borderBottomColor: '#008CCF',borderLeft:'none',borderRight:'none',}}
+                            sx={{fontSize:'13px',borderTop: '3px solid #008CCF',borderBottomColor: '#008CCF',borderLeft:'none',borderRight:'none',}}
 
                         />
 

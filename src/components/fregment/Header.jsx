@@ -12,6 +12,8 @@ import {AccountCircle} from "@mui/icons-material";
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import LoginIcon from '@mui/icons-material/Login';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import PermIdentityIcon from '@mui/icons-material/PermIdentity';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { green } from '@mui/material/colors';
 const Img = styled.img`
     width: 179px;
@@ -23,6 +25,9 @@ const UserDiv = styled.div`
     right: 150px;
 `
 
+const Span = styled.span`
+    margin-left:20px;
+`
 
 const Header = () => {
 
@@ -92,20 +97,33 @@ const Header = () => {
                             </Tabs>
                         </Toolbar>
                     </Box>
-                    {/*<Box sx={{marginRight:'1%'}}>*/}
-                    {/*    <IconButton*/}
-                    {/*        onClick={()=>logout()}*/}
-                    {/*        aria-label="account of current user"*/}
-                    {/*        aria-controls="menu-appbar"*/}
-                    {/*        aria-haspopup="true"*/}
-                    {/*        color="inherit"*/}
-                    {/*    >*/}
-                    {/*        <span style={{'fontSize':'17px'}}>*/}
-                    {/*            Logout*/}
-                    {/*        </span>*/}
-
-                    {/*    </IconButton>*/}
-                    {/*</Box>*/}
+                    <Box sx={{width:'400px',textAlign:'center'}}>
+                        <IconButton
+                            onClick={()=>logout()}
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            color="inherit"
+                        >
+                            <PermIdentityIcon/>
+                            <span style={{'fontSize':'14px', 'margin-left': '2px', 'color':'#666666'}}>
+                                관리자
+                            </span>
+                        </IconButton>
+                        <Span>&nbsp;</Span>
+                        <IconButton
+                            onClick={()=>logout()}
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            color="inherit"
+                        >
+                            <ExitToAppIcon/>
+                            <span style={{'fontSize':'14px', 'margin-left': '2px','color':'#666666'}}>
+                                로그아웃
+                            </span>
+                        </IconButton>
+                    </Box>
                 </Box>
             </AppBar>
     )

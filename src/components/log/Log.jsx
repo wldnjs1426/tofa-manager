@@ -27,6 +27,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 const GridDiv = styled.div`
@@ -39,6 +40,7 @@ const FaultCodeDiv = styled.div`
     height:800px;
 `
 const SubjectDiv = styled.div`
+    margin-top:30px;
     width:100%;
     height:50px;
     display:flex;
@@ -47,18 +49,16 @@ const SubjectDiv = styled.div`
     font-weight:bold;
 `
 const SeachDiv = styled.div`
-    width:30%;
+    width:600px;
     height: 100px;
     display:flex;
     justify-content:space-around;
     align-items:center;
-    border-radius:10px;
-    
     border:1px solid lightgray;
     margin-bottom:2%
 `
 const DateDiv = styled.div`
-    width:70%;
+    width:100%;
     height:80px;
     display:flex;
     justify-content:space-around;
@@ -76,7 +76,24 @@ const ModalDiv = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
     border:5px solid black;
+`
+const FaultCodeDivv = styled.div`
+    width:98%;
+    height:450px;
+`
 
+const CloseDiv = styled.div`
+    width:40px;
+    height:40px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:absolute;
+    border:1px solid lightgray;
+    border-radius:5px;
+    top:15px;
+    right:15px;
+    cursor:pointer;
 `
 
 const theme = createTheme(
@@ -87,7 +104,7 @@ function CustomToolbar() {
     return (
         <GridToolbarContainer sx={{height:'30px'}}>
             <div style={{marginLeft:'0.2%'}}>
-            <GridToolbar />
+            <GridToolbar csvOptions={{ disableToolbarButton: true }}/>
             </div>
         </GridToolbarContainer>
     );
@@ -158,14 +175,14 @@ const Log = () => {
 
     //접속로그컬럼 정의
     const columns = [
-        { field: 'id', headerName: '순번', width: 70},
-        { field: 'name', headerName: '이름', width: 400,renderCell: (params) => [
+        { field: 'id', headerName: '순번', width: 40},
+        { field: 'name', headerName: '이름', width: 100,renderCell: (params) => [
                 <strong key={params.id} onClick={() => handleEvent(params)} style={{cursor:'pointer'}}>
                     {params.row.name}
                 </strong>
             ] },
-        { field: 'email', headerName: '이메일', width: 300 },
-        { field: 'dept', headerName: '소속', width: 200 },
+        { field: 'email', headerName: '이메일', width: 200 },
+        { field: 'dept', headerName: '소속', width: 150 },
         { field: 'loginIp', headerName: 'IP', width: 300},
         { field: 'loginTime', headerName: '로그인시간', width: 300},
         { field: 'logOutTime', headerName: '로그아웃시간', width: 300},
@@ -219,6 +236,9 @@ const Log = () => {
                     aria-describedby="modal-modal-description"
                 >
                     <ModalDiv>
+                        <CloseDiv>
+                            <CloseIcon onClick={()=>handleClose()} sx={{width:'24px',height:'24px'}}/>
+                        </CloseDiv>
                         <div style={{
                             width:'90%',
                             margin:'0 auto',
@@ -292,10 +312,17 @@ const Log = () => {
 
                     <SeachDiv>
                         <DateDiv>
+                            <div style={{'marginLeft':'15px','font-weight': '400','width':'102px','fontSize':'14px', 'color':'#333333'}}>
+                                접속일자 <br/>
+                                상세검색
+                            </div>
                             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
                                 <DatePicker
                                     label="시작 날짜"
-                                    renderInput={(params) => <TextField {...params} />}
+                                    renderInput={(params) => <TextField {...params} sx={{
+                                        '& .MuiInputBase-input': { fontSize:'14px'},
+                                        '& .MuiSvgIcon-root' : {width:'20px',height:'20px'}
+                                    }}/>}
                                     value={startDate}
                                     onChange={(newValue) => {
                                         const date = new Date(newValue.$d)
@@ -312,7 +339,12 @@ const Log = () => {
                             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
                                 <DatePicker
                                     label="종료 날짜"
-                                    renderInput={(params) => <TextField {...params} />}
+                                    renderInput={(params) => <TextField  {...params} sx={{
+                                        '& .MuiInputBase-input': { fontSize:'14px'},
+                                        '& .MuiSvgIcon-root' : {width:'20px',height:'20px'},
+                                        marginRight:'15px'
+
+                                    }}/>}
                                     value={endDate}
                                     onChange={(newValue) => {
                                         const date = new Date(newValue.$d)
@@ -324,31 +356,38 @@ const Log = () => {
                                 />
                             </LocalizationProvider>
 
-                            </DateDiv>
+                        </DateDiv>
                         {/*<ThemeProvider theme={buttonTheme}>*/}
                         {/*    <Button variant="contained" color="confirm" startIcon={<CheckIcon />} sx={{width: '100px',height:'50px'}}>검색</Button>*/}
                         {/*</ThemeProvider>*/}
                     </SeachDiv>
-                    총 {row.length}개의 검색이 완료되었습니다.
-                    <ThemeProvider theme={theme}>
-                        <DataGridPremium
-                            rows={row}
-                            columns={columns}
-                            pageSize={10}
-                            rowsPerPageOptions={[10]}
-                            initialState={{
-                                sorting: {
-                                    sortModel: [{ field: 'loginTime', sort: 'desc' }],
-                                },
-                            }}
-                            checkboxSelection
-                            onSelectionModelChange={(newSelectionModel) => {
-                                setUserCheck(newSelectionModel);
-                            }}
-                            components={{ Toolbar: CustomToolbar }}
-                        />
+                    <div style={{'width': '409px', 'height': '14px','font-weight': '400', 'font-size': '14px', 'color':'#666666','marginBottom':'20px'}}>
+                        총 {row.length}개의 목록이 검색되었습니다.
+                    </div>
+                    <FaultCodeDivv>
+                        <ThemeProvider theme={theme}>
+                            <DataGridPremium
+                                rows={row}
+                                columns={columns}
+                                pageSize={10}
+                                rowsPerPageOptions={[10]}
+                                initialState={{
+                                    sorting: {
+                                        sortModel: [{ field: 'loginTime', sort: 'desc' }],
+                                    },
+                                }}
+                                checkboxSelection
+                                onSelectionModelChange={(newSelectionModel) => {
+                                    setUserCheck(newSelectionModel);
+                                }}
+                                components={{ Toolbar: CustomToolbar }}
+                                sx={{
+                                    fontSize:'13px',borderTop: '3px solid #008CCF',borderBottomColor: '#008CCF',borderLeft:'none',borderRight:'none',borderRadius:'0px'}}
 
-                    </ThemeProvider>
+                            />
+
+                        </ThemeProvider>
+                    </FaultCodeDivv>
                 </FaultCodeDiv>
             </GridDiv>
 
