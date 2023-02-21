@@ -8,7 +8,10 @@ import Button from '@mui/material/Button';
 import CheckIcon from '@mui/icons-material/Check';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios'
-
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from "react-redux";
+import { decrement, increment } from "../../reducers/counter";
+import { useCookies } from 'react-cookie'; //
 
 const Img = styled.img`
     width: 179px;
@@ -77,9 +80,38 @@ const buttonTheme = createTheme({
     },
 });
 
+
+
+
+
 const Login = () => {
+
+    // dispatch를 사용하기 위한 준비
+    const dispatch = useDispatch();
+
+    // store에 접근하여 state 가져오기
+    const count = useSelector((state) => state.counter.number);
+
+    const navigate = useNavigate();
+
+    const ii = () =>{
+        dispatch(increment());
+    }
+
+    const [cookies, setCookie] = useCookies(['key']); // 쿠키 훅
+
+    useEffect(() =>{
+        if(cookies.key){
+            navigate(`/home`);
+            window.location.reload();
+
+        }
+    },[])
+
+
     const [id,setId] = useState()
     const [password,setPassword] = useState()
+    const [value,setValue] = useState('/home')
 
     const loginCheck = () => {
         axios.post(`http://27.96.134.216:3000/api/admin/login`,{
@@ -87,26 +119,27 @@ const Login = () => {
             "password":password
         })
             .then(function (response) {
-                alert('로그인 되었습니다.')
+                // localStorage.setItem('key',response.data.access_key)
+                // localStorage.setItem('name',response.data.username)
+                setCookie('key', response.data.access_key);
+                setCookie('name', response.data.username);
 
-                axios.post(`http://27.96.134.216:3000/api/admin/check`,{
-                    "userId":id,
-                    "password":password
-                })
-                    .then(function (response) {
-                        console.log(response)
-                    })
-                    .catch(function (error) {
-                        alert('존재하지 않는 아이디이거나 비밀번호가 일치하지 않습니다.')
-                    });
 
+                navigate(`${value}`);
+                // window.location.reload();
 
             })
             .catch(function (error) {
                 alert('존재하지 않는 아이디이거나 비밀번호가 일치하지 않습니다.')
             });
     }
-console.log(id)
+
+    const handleOnKeyPress = e => {
+        if (e.key === 'Enter') {
+            loginCheck(); // Enter 입력이 되면 클릭 이벤트 실행
+        }
+    };
+
     return (
         <Div>
             <Header>
@@ -128,29 +161,29 @@ console.log(id)
                     <Img src={Logo} alt="BigCo Inc. logo"/>
                 </Typography>
             </Header>
-            <Body>
-                <SpanDiv>
-                    <Span>
-                        아이디
-                    </Span>
-                    <TextField size='small' sx={{width:'250px',height:'39px'}} onChange={(event) => {
-                        setId(event.target.value);
-                    }}/>
-                </SpanDiv>
-                <SpanDiv>
-                    <Span>
-                        비밀번호
-                    </Span>
-                    <TextField size='small' sx={{width:'250px',height:'39px'}} type="password" autoComplete="current-password" onChange={(event) => {
-                        setPassword(event.target.value);
-                    }}/>
-                </SpanDiv>
-            </Body>
-            <Footer>
-                <ThemeProvider theme={buttonTheme}>
-                    <Button variant="contained" color="confirm" onClick={()=>loginCheck()} startIcon={<CheckIcon />} sx={{width: '160px',height:'50px'}}>로그인</Button>
-                </ThemeProvider>
-            </Footer>
+                <Body>
+                    <SpanDiv>
+                        <Span>
+                            아이디
+                        </Span>
+                        <TextField size='small' sx={{width:'250px',height:'39px'}} onChange={(event) => {
+                            setId(event.target.value);
+                        }}/>
+                    </SpanDiv>
+                    <SpanDiv>
+                        <Span>
+                            비밀번호
+                        </Span>
+                        <TextField size='small' onKeyPress={handleOnKeyPress} sx={{width:'250px',height:'39px'}} type="password" autoComplete="current-password" onChange={(event) => {
+                            setPassword(event.target.value);
+                        }}/>
+                    </SpanDiv>
+                </Body>
+                <Footer>
+                    <ThemeProvider theme={buttonTheme}>
+                        <Button variant="contained" color="confirm" onClick={()=>loginCheck()} startIcon={<CheckIcon />} sx={{width: '160px',height:'50px'}}>로그인</Button>
+                    </ThemeProvider>
+                </Footer>
         </Div>
     );
 }

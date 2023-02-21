@@ -28,6 +28,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import CloseIcon from '@mui/icons-material/Close';
+import { useCookies } from 'react-cookie';
 
 
 const GridDiv = styled.div`
@@ -130,6 +131,10 @@ const buttonTheme = createTheme({
 //Log 컴포넌트
 const Log = () => {
 
+    const [cookies, setCookie, removeCookie] = useCookies(['key']);
+
+    const navigate = useNavigate();
+
     //유저아이디 체크
     const [userCheck, setUserCheck] = useState([]);
     //검색조건 시작날짜와 종료날짜
@@ -147,9 +152,18 @@ const Log = () => {
     const handleClose = () => setOpen(false);
 
     useEffect(() => {
+
+
+        if(!cookies.key){
+            alert('로그인이 필요합니다.')
+            navigate(`/`);
+        }
+
         axios.post(`http://27.96.134.216:3000/log/user-log-list`, {
             "startDate": startDate,
-            "endDate": endDate
+            "endDate": endDate,
+            "access_key":cookies.key
+
         })
             .then(function (response) {
                 const data = response.data.list
@@ -203,7 +217,8 @@ const Log = () => {
         axios.post(`http://27.96.134.216:3000/log/menu-log-list`, {
             "startDate": date,
             "endDate": date,
-            "account_id": accountId
+            "account_id": accountId,
+            "access_key":cookies.key
         }).then(function (response) {
             const data = response.data.list
             const rows = []
@@ -312,7 +327,7 @@ const Log = () => {
 
                     <SeachDiv>
                         <DateDiv>
-                            <div style={{'marginLeft':'15px','font-weight': '400','width':'102px','fontSize':'14px', 'color':'#333333'}}>
+                            <div style={{'marginLeft':'15px','fontWeight': '400','width':'102px','fontSize':'14px', 'color':'#333333'}}>
                                 접속일자 <br/>
                                 상세검색
                             </div>
@@ -361,7 +376,7 @@ const Log = () => {
                         {/*    <Button variant="contained" color="confirm" startIcon={<CheckIcon />} sx={{width: '100px',height:'50px'}}>검색</Button>*/}
                         {/*</ThemeProvider>*/}
                     </SeachDiv>
-                    <div style={{'width': '409px', 'height': '14px','font-weight': '400', 'font-size': '14px', 'color':'#666666','marginBottom':'20px'}}>
+                    <div style={{'width': '409px', 'height': '14px','fontWeight': '400', 'fontSize': '14px', 'color':'#666666','marginBottom':'20px'}}>
                         총 {row.length}개의 목록이 검색되었습니다.
                     </div>
                     <FaultCodeDivv>

@@ -5,28 +5,27 @@ import Header from "./components/fregment/Header";
 import { BrowserRouter, Route,  Routes } from "react-router-dom";
 import { LicenseInfo } from '@mui/x-license-pro';
 
+
 LicenseInfo.setLicenseKey('eda985968670b41792906302d2418333Tz01Nzg2NCxFPTE3MDU1NjE3MzE4OTUsUz1wcmVtaXVtLExNPXN1YnNjcmlwdGlvbixLVj0y');
+
 function App() {
     return (
     <>
-      <BrowserRouter>
-          {window.location.pathname === '/login' ? undefined : <Header/>}
+          <Header/>
+          {/*{window.location.pathname === '/login' ? undefined : }*/}
 
         <Routes>
 
           {routes.map(route => {
             return (
                 <Route
-                    key={route.path}
+                    key={route.id}
                     path={route.path}
                     element={<route.component />}
-                >
-
-                </Route>
+                />
             );
           })}
         </Routes>
-      </BrowserRouter>
     </>
   );
 }

@@ -27,6 +27,8 @@ import FormLabel from '@mui/material/FormLabel';
 import UserHeader from './UserHeader';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
@@ -163,7 +165,13 @@ const btnTheme = createTheme({
     },
 });
 
+
 const UserList = () => {
+
+    const navigate = useNavigate();
+
+    const [cookies, setCookie, removeCookie] = useCookies(['key']);
+
 
     //데이터 그리드 유저 체크 확인 state
     const [userId, setUserId] = useState([]);
@@ -179,10 +187,17 @@ const UserList = () => {
     const [modify,setModify] = useState(false)
 
     useEffect(() =>{
+
+        if(!cookies.key){
+            alert('로그인이 필요합니다.')
+            navigate(`/`);
+        }
+
         axios.post(`http://27.96.134.216:3000/api/admin/info-list`,
             {
                 "searchType":"",
-                "searchText":""
+                "searchText":"",
+                "access_key":cookies.key
             })
             .then(function (response) {
                 const data = response.data
@@ -209,6 +224,9 @@ const UserList = () => {
             setRow([])
         }
     },[modify])
+
+
+
 
     //레이어 팝업
     const handleClose = () => setOpen(false);
@@ -239,12 +257,33 @@ const UserList = () => {
         axios.post(`http://27.96.134.216:3000/api/admin/member-modification`,
             {
                 "account_id":statusId,
-                "resourceCodeList":codeList
+                "resourceCodeList":codeList,
+                "access_key":cookies.key
+
             })
             .then(function (response) {
                 alert('수정이 완료되었습니다.')
                 setModify(modify ? false : true)
                 handleClose()
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    const rejectJoin = () => {
+        if(userId.length === 0){
+            alert('사용자를 선택해 주세요')
+            return
+        }
+
+        axios.post(`http://27.96.134.216:3000/api/admin/removal-account`,{
+            "account_ids":userId.join(),
+            "access_key":cookies.key
+        })
+            .then(function (response) {
+                alert('가입 거절이 완료되었습니다.')
+                setModify(modify ? false : true)
             })
             .catch(function (error) {
                 console.log(error);
@@ -259,7 +298,7 @@ const UserList = () => {
                 </strong>
             )},
         { field: 'belong', headerName: '소속', width: 100 },
-        { field: 'email', headerName: '이메일', width: 200},
+        { field: 'email', headerName: '이메일', width: 250},
         { field: 'phone', headerName: '연락처', width: 150},
         { field: 'authority', headerName: '권한', width: 150},
         { field: 'authorityList', headerName: '권한 목록', width: 300},
@@ -449,7 +488,6 @@ const UserList = () => {
                         {/*총 {row.length}개의 검색이 완료되었습니다.*/}
 
                         <DataGridPremium
-                            disableSelectionOnClick
                             rows={row}
                             columns={columns}
                             pageSize={10}
@@ -462,6 +500,12 @@ const UserList = () => {
                             sx={{fontSize:'13px',borderTop: '3px solid #008CCF',borderBottomColor: '#008CCF',borderLeft:'none',borderRight:'none',}}
 
                         />
+
+                        <ButtonDiv>
+                            <ThemeProvider theme={btnTheme}>
+                                <Button variant="contained" color="reject" startIcon={<ClearIcon />} onClick={rejectJoin} sx={{width: '160px',height:'50px'}}>회원 삭제</Button>
+                            </ThemeProvider>
+                        </ButtonDiv>
 
                     </ThemeProvider>
                 </FaultCodeDiv>

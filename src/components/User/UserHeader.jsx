@@ -21,6 +21,8 @@ const UserHeader = () => {
     const navigate = useNavigate();
 
     const [value, setValue] = useState(window.location.pathname);
+    console.log(value)
+    console.log(window.location.pathname)
 
     const userHandleChange = (newValue) => {
         setValue(newValue);
@@ -34,8 +36,8 @@ const UserHeader = () => {
             <ButtonGroup variant="contained" aria-label="outlined primary button group">
                 <ThemeProvider theme={buttonTheme}>
                     <Button sx={check}
-                            color={value === '/' ? 'check' : 'unCheck'}
-                            onClick={() => userHandleChange('/')}
+                            color={value === '/home' ? 'check' : 'unCheck'}
+                            onClick={() => userHandleChange('/home')}
                     >가입 승인</Button>
                     <Button sx={check}
                             color={value === '/userlist' ? 'check' : 'unCheck'}

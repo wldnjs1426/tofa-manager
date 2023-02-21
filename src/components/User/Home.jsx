@@ -12,7 +12,9 @@ import ClearIcon from '@mui/icons-material/Clear';
 import Button from '@mui/material/Button';
 import UserHeader from './UserHeader';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'
+import axios from 'axios';
+import { useCookies } from 'react-cookie';
+
 
 
 const GridDiv = styled.div`
@@ -40,10 +42,10 @@ const ButtonDiv = styled.div`
     margin:0 auto;
 `
 const columns = [
-    { field: 'id', headerName: 'ID', width: 70, hide:true, hideable: false},
+    { field: 'id', headerName: 'ID', hide:true, hideable: false},
     { field: 'name', headerName: '이름', width:200 },
     { field: 'belong', headerName: '소속', width: 100 },
-    { field: 'email', headerName: '이메일', width: 200},
+    { field: 'email', headerName: '이메일', width: 250},
     { field: 'phone', headerName: '연락처', width: 150},
     { field: 'authority', headerName: '권한', width: 150},
     { field: 'authorityList', headerName: '권한 목록', width: 300},
@@ -80,15 +82,26 @@ const buttonTheme = createTheme({
 
 const Home = () => {
 
+    const [cookies, setCookie, removeCookie] = useCookies(['key']);
+
+    const navigate = useNavigate();
     //유저아이디 체크
     const [userCheck, setUserCheck] = useState([]);
     const [row, setRow] = useState([]);
     const [modify,setModify] = useState(false)
 
+
     useEffect(() =>{
+
+        if(!cookies.key){
+            alert('로그인이 필요합니다.')
+            navigate(`/`);
+        }
+
         axios.post(`http://27.96.134.216:3000/api/admin/wait-list`,{
             "startDate":"",
-            "endDate":""
+            "endDate":"",
+            "access_key":cookies.key
         })
             .then(function (response) {
                 const data = response.data
@@ -122,7 +135,8 @@ const Home = () => {
             return
         }
         axios.post(`http://27.96.134.216:3000/api/admin/approval-join`,{
-            "account_ids":userCheck.join()
+            "account_ids":userCheck.join(),
+            "access_key":cookies.key
         })
             .then(function (response) {
                 alert('가입 승인이 완료되었습니다.')
@@ -140,7 +154,8 @@ const Home = () => {
         }
 
         axios.post(`http://27.96.134.216:3000/api/admin/removal-account`,{
-            "account_ids":userCheck.join()
+            "account_ids":userCheck.join(),
+            "access_key":cookies.key
         })
             .then(function (response) {
                 alert('가입 거절이 완료되었습니다.')
@@ -152,6 +167,7 @@ const Home = () => {
     }
 
     return (
+
         <div>
             <GridDiv>
                 <FaultCodeDiv>
@@ -169,7 +185,7 @@ const Home = () => {
                                 setUserCheck(
                                     newSelectionModel
                                 );
-                            }} gc
+                            }}
                             components={{ Toolbar: CustomToolbar }}
                             sx={{fontSize:'13px',borderTop: '3px solid #008CCF',borderBottomColor: '#008CCF',borderLeft:'none',borderRight:'none',borderRadius:'0px'}}
                         />

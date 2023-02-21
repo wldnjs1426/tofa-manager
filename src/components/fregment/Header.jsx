@@ -5,7 +5,7 @@ import Tabs from "@mui/material/Tabs";
 import Typography from '@mui/material/Typography';
 import Logo from '../../static/images/logo.png';
 import styled, { css } from 'styled-components';
-import {useCallback, useState} from "react";
+import {useCallback, useState, useEffect} from "react";
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import {AccountCircle} from "@mui/icons-material";
@@ -15,6 +15,9 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { green } from '@mui/material/colors';
+import { useCookies } from 'react-cookie'; 
+
+
 const Img = styled.img`
     width: 179px;
     height: 40.45px;
@@ -31,13 +34,21 @@ const Span = styled.span`
 
 const Header = () => {
 
+    const [cookies, setCookie, removeCookie] = useCookies(['key']);
+
     const navigate = useNavigate();
 
-    const [value, setValue] = useState(window.location.pathname === '/userlist' ? '/' : window.location.pathname);
+    const [value, setValue] = useState(window.location.pathname === '/userlist' || window.location.pathname === '/'  ? '/home' : window.location.pathname);
     const [result, setResult] = useState(false);
 
     
     const handleChange = (event, newValue) => {
+
+        if(!cookies.key){
+            alert('로그인이 필요합니다.')
+            return
+        }
+
         setValue(newValue);
         navigate(`${newValue}`);
     };
@@ -47,10 +58,14 @@ const Header = () => {
     }
 
     const logout = () =>{
-        window.close();
-        // console.log(result)
+        removeCookie('key')
+        alert('로그아웃 되었습니다.')
+        navigate('/')
 
     }
+
+    // if (window.location.pathname === "/") return null;
+
 
     return(
             <AppBar position="static" color="transparent" sx={{display:'inline', backgroundColor:'white'}}>
@@ -75,7 +90,7 @@ const Header = () => {
                                 <Img src={Logo} alt="BigCo Inc. logo"/>
                             </Typography>
                             <Tabs value={value} onChange={handleChange} aria-label="Main Tabs" sx={{marginLeft:'30px'}}>
-                                <Tab icon={<PeopleAltIcon sx={value === '/' ? { color: green[500] } : { color: green[0] }}/>} iconPosition='start' label='사용자 관리' value='/' sx={{fontWeight:'700'}}/>
+                                <Tab icon={<PeopleAltIcon sx={value === '/home' ? { color: green[500] } : { color: green[0] }}/>} iconPosition='start' label='사용자 관리' value='/home' sx={{fontWeight:'700'}}/>
                                 {/*<div>*/}
                                 {/*    <div style={{*/}
                                 {/*    width: '0px',*/}
@@ -97,17 +112,16 @@ const Header = () => {
                             </Tabs>
                         </Toolbar>
                     </Box>
-                    <Box sx={{width:'400px',textAlign:'center'}}>
+                    {cookies.key && <Box sx={{width:'400px',textAlign:'center'}}>
                         <IconButton
-                            onClick={()=>logout()}
                             aria-label="account of current user"
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
                             color="inherit"
                         >
                             <PermIdentityIcon/>
-                            <span style={{'fontSize':'14px', 'margin-left': '2px', 'color':'#666666'}}>
-                                관리자
+                            <span style={{'fontSize':'14px', 'marginLeft': '2px', 'color':'#666666'}}>
+                                {cookies.name}
                             </span>
                         </IconButton>
                         <Span>&nbsp;</Span>
@@ -119,11 +133,12 @@ const Header = () => {
                             color="inherit"
                         >
                             <ExitToAppIcon/>
-                            <span style={{'fontSize':'14px', 'margin-left': '2px','color':'#666666'}}>
+                            <span style={{'fontSize':'14px', 'marginLeft': '2px','color':'#666666'}}>
                                 로그아웃
                             </span>
                         </IconButton>
-                    </Box>
+                    </Box>}
+
                 </Box>
             </AppBar>
     )

@@ -6,22 +6,27 @@ import Chart from '../components/chart/Chart'
 
 export default [
     {
+        id:0,
         path: '/',
-        component: Home
-    },
-    {
-        path: '/login',
         component: Login
     },
     {
+        id:1,
+        path: '/home',
+        component: Home
+    },
+    {
+        id:2,
         path: '/userlist',
         component: UserList
     },
     {
+        id:3,
         path: '/log',
         component: Log
     },
     {
+        id:4,
         path: '/chart',
         component: Chart
     }
