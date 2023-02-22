@@ -159,7 +159,7 @@ const Log = () => {
             navigate(`/`);
         }
 
-        axios.post(`http://27.96.134.216:3000/log/user-log-list`, {
+        axios.post(`http://humetro.tofa.kr:3000/log/user-log-list`, {
             "startDate": startDate,
             "endDate": endDate,
             "access_key":cookies.key
@@ -189,7 +189,7 @@ const Log = () => {
 
     //접속로그컬럼 정의
     const columns = [
-        { field: 'id', headerName: '순번', width: 40},
+        { field: 'id', headerName: '순번', width: 40,hide:true, hideable: false},
         { field: 'name', headerName: '이름', width: 100,renderCell: (params) => [
                 <strong key={params.id} onClick={() => handleEvent(params)} style={{cursor:'pointer'}}>
                     {params.row.name}
@@ -214,7 +214,7 @@ const Log = () => {
     const menuLog = (param) =>{
         const date = param.row.loginTime.substr(0,10)
         const accountId = param.row.accountId
-        axios.post(`http://27.96.134.216:3000/log/menu-log-list`, {
+        axios.post(`http://humetro.tofa.kr:3000/log/menu-log-list`, {
             "startDate": date,
             "endDate": date,
             "account_id": accountId,
@@ -328,8 +328,7 @@ const Log = () => {
                     <SeachDiv>
                         <DateDiv>
                             <div style={{'marginLeft':'15px','fontWeight': '400','width':'102px','fontSize':'14px', 'color':'#333333'}}>
-                                접속일자 <br/>
-                                상세검색
+                                접속일자 
                             </div>
                             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
                                 <DatePicker

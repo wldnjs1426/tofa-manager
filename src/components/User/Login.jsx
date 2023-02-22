@@ -114,7 +114,7 @@ const Login = () => {
     const [value,setValue] = useState('/home')
 
     const loginCheck = () => {
-        axios.post(`http://27.96.134.216:3000/api/admin/login`,{
+        axios.post(`http://humetro.tofa.kr:3000/api/admin/login`,{
             "userId":id,
             "password":password
         })

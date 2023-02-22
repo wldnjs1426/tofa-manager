@@ -193,7 +193,7 @@ const UserList = () => {
             navigate(`/`);
         }
 
-        axios.post(`http://27.96.134.216:3000/api/admin/info-list`,
+        axios.post(`http://humetro.tofa.kr:3000/api/admin/info-list`,
             {
                 "searchType":"",
                 "searchText":"",
@@ -254,7 +254,7 @@ const UserList = () => {
         const codeList = String(checkedList.join())
         const statusId = String(status.id)
 
-        axios.post(`http://27.96.134.216:3000/api/admin/member-modification`,
+        axios.post(`http://humetro.tofa.kr:3000/api/admin/member-modification`,
             {
                 "account_id":statusId,
                 "resourceCodeList":codeList,
@@ -277,7 +277,7 @@ const UserList = () => {
             return
         }
 
-        axios.post(`http://27.96.134.216:3000/api/admin/removal-account`,{
+        axios.post(`http://humetro.tofa.kr:3000/api/admin/removal-account`,{
             "account_ids":userId.join(),
             "access_key":cookies.key
         })

@@ -108,7 +108,7 @@ const Header = () => {
                                 {/*        margin: '0 auto'}}>*/}
                                 {/*    </div>*/}
                                 {/*</div>*/}
-                                {/*<Tab icon={<BarChartIcon sx={value === '/chart' ? { color: green[500] } : { color: green[0] }} />} iconPosition="start" label="접속 통계" value='/chart' sx={{fontWeight:'700'}}/>*/}
+                                <Tab icon={<BarChartIcon sx={value === '/chart' ? { color: green[500] } : { color: green[0] }} />} iconPosition="start" label="접속 통계" value='/chart' sx={{fontWeight:'700'}}/>
                             </Tabs>
                         </Toolbar>
                     </Box>
