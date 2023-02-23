@@ -159,7 +159,7 @@ const Log = () => {
             navigate(`/`);
         }
 
-        axios.post(`http://humetro.tofa.kr:3000/log/user-log-list`, {
+        axios.post(`https://humetro-api.tofa.kr/log/user-log-list`, {
             "startDate": startDate,
             "endDate": endDate,
             "access_key":cookies.key
@@ -214,7 +214,7 @@ const Log = () => {
     const menuLog = (param) =>{
         const date = param.row.loginTime.substr(0,10)
         const accountId = param.row.accountId
-        axios.post(`http://humetro.tofa.kr:3000/log/menu-log-list`, {
+        axios.post(`https://humetro-api.tofa.kr/log/menu-log-list`, {
             "startDate": date,
             "endDate": date,
             "account_id": accountId,

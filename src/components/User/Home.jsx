@@ -98,7 +98,7 @@ const Home = () => {
             navigate(`/`);
         }
 
-        axios.post(`http://humetro.tofa.kr:3000/api/admin/wait-list`,{
+        axios.post(`https://humetro-api.tofa.kr/api/admin/wait-list`,{
             "startDate":"",
             "endDate":"",
             "access_key":cookies.key
@@ -134,7 +134,7 @@ const Home = () => {
             alert('사용자를 선택해 주세요')
             return
         }
-        axios.post(`http://humetro.tofa.kr:3000/api/admin/approval-join`,{
+        axios.post(`https://humetro-api.tofa.kr/api/admin/approval-join`,{
             "account_ids":userCheck.join(),
             "access_key":cookies.key
         })
@@ -153,7 +153,7 @@ const Home = () => {
             return
         }
 
-        axios.post(`http://humetro.tofa.kr:3000/api/admin/removal-account`,{
+        axios.post(`https://humetro-api.tofa.kr/api/admin/removal-account`,{
             "account_ids":userCheck.join(),
             "access_key":cookies.key
         })
