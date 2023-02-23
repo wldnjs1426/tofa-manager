@@ -282,7 +282,7 @@ const UserList = () => {
             "access_key":cookies.key
         })
             .then(function (response) {
-                alert('가입 거절이 완료되었습니다.')
+                alert('회원 삭제가 완료되었습니다.')
                 setModify(modify ? false : true)
             })
             .catch(function (error) {
