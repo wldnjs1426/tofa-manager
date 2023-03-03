@@ -29,6 +29,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import CloseIcon from '@mui/icons-material/Close';
 import { useCookies } from 'react-cookie';
+import API  from '../../static/js/API'
 
 
 const GridDiv = styled.div`
@@ -76,10 +77,10 @@ const ModalDiv = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border:5px solid black;
+    border:2px solid black;
 `
 const FaultCodeDivv = styled.div`
-    width:98%;
+    width:100%;
     height:450px;
 `
 
@@ -159,7 +160,7 @@ const Log = () => {
             navigate(`/`);
         }
 
-        axios.post(`https://humetro-api.tofa.kr/log/user-log-list`, {
+        axios.post(`${API}/log/user-log-list`, {
             "startDate": startDate,
             "endDate": endDate,
             "access_key":cookies.key
@@ -168,6 +169,7 @@ const Log = () => {
             .then(function (response) {
                 const data = response.data.list
                 const rows = []
+                console.log(response)
                 data.map((item, idx) => {
                     rows.push({
                         id: idx,
@@ -214,7 +216,7 @@ const Log = () => {
     const menuLog = (param) =>{
         const date = param.row.loginTime.substr(0,10)
         const accountId = param.row.accountId
-        axios.post(`https://humetro-api.tofa.kr/log/menu-log-list`, {
+        axios.post(`${API}/log/menu-log-list`, {
             "startDate": date,
             "endDate": date,
             "account_id": accountId,
@@ -251,8 +253,8 @@ const Log = () => {
                     aria-describedby="modal-modal-description"
                 >
                     <ModalDiv>
-                        <CloseDiv>
-                            <CloseIcon onClick={()=>handleClose()} sx={{width:'24px',height:'24px'}}/>
+                        <CloseDiv onClick={()=>handleClose()}>
+                            <CloseIcon sx={{width:'24px',height:'24px'}}/>
                         </CloseDiv>
                         <div style={{
                             width:'90%',
@@ -390,7 +392,6 @@ const Log = () => {
                                         sortModel: [{ field: 'loginTime', sort: 'desc' }],
                                     },
                                 }}
-                                checkboxSelection
                                 onSelectionModelChange={(newSelectionModel) => {
                                     setUserCheck(newSelectionModel);
                                 }}

@@ -14,7 +14,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { green } from '@mui/material/colors';
+import { green,blue } from '@mui/material/colors';
 import { useCookies } from 'react-cookie'; 
 
 
@@ -32,40 +32,30 @@ const Span = styled.span`
     margin-left:20px;
 `
 
-const Header = () => {
-
-    const [cookies, setCookie, removeCookie] = useCookies(['key']);
+const Header = (prob) => {
+    console.log(prob)
+    const [cookies, setCookie, removeCookie] = useCookies();
 
     const navigate = useNavigate();
 
-    const [value, setValue] = useState(window.location.pathname === '/userlist' || window.location.pathname === '/'  ? '/home' : window.location.pathname);
-    const [result, setResult] = useState(false);
 
-    
-    const handleChange = (event, newValue) => {
+    const handleChange = (newValue) => {
 
-        if(!cookies.key){
-            alert('로그인이 필요합니다.')
-            return
-        }
+        // if(!cookies.key){
+        //     alert('로그인이 필요합니다.')
+        //     return
+        // }
 
-        setValue(newValue);
+        prob.pathSetValue(newValue);
         navigate(`${newValue}`);
     };
-
-    if(result){
-
-    }
-
     const logout = () =>{
         removeCookie('key')
+        removeCookie('name')
         alert('로그아웃 되었습니다.')
+        prob.pathSetValue('/');
         navigate('/')
-
     }
-
-    // if (window.location.pathname === "/") return null;
-
 
     return(
             <AppBar position="static" color="transparent" sx={{display:'inline', backgroundColor:'white'}}>
@@ -76,7 +66,7 @@ const Header = () => {
                                 variant="h6"
                                 noWrap
                                 component="a"
-                                href="/"
+                                href="/home"
                                 sx={{
                                     mr: 2,
                                     display: { xs: 'none', md: 'flex' },
@@ -89,28 +79,12 @@ const Header = () => {
                             >
                                 <Img src={Logo} alt="BigCo Inc. logo"/>
                             </Typography>
-                            <Tabs value={value} onChange={handleChange} aria-label="Main Tabs" sx={{marginLeft:'30px'}}>
-                                <Tab icon={<PeopleAltIcon sx={value === '/home' ? { color: green[500] } : { color: green[0] }}/>} iconPosition='start' label='사용자 관리' value='/home' sx={{fontWeight:'700'}}/>
-                                {/*<div>*/}
-                                {/*    <div style={{*/}
-                                {/*    width: '0px',*/}
-                                {/*    height: '37.24px',*/}
-                                {/*    border: '1px solid #BBBBBB',*/}
-                                {/*    margin: '0 auto'}}>*/}
-                                {/*    </div>*/}
-                                {/*</div>*/}
-                                <Tab icon={<LoginIcon sx={value === '/log' ? { color: green[500] } : { color: green[0] }} />} iconPosition="start" label="접속 로그" value='/log' sx={{fontWeight:'700'}}/>
-                                {/*<div style={{width:'100px',display:'flex',alignItems:'center'}}>*/}
-                                {/*    <div style={{*/}
-                                {/*        width: '0px',*/}
-                                {/*        height: '37.24px',*/}
-                                {/*        border: '1px solid #BBBBBB',*/}
-                                {/*        margin: '0 auto'}}>*/}
-                                {/*    </div>*/}
-                                {/*</div>*/}
-                                {/*<Tab icon={<BarChartIcon sx={value === '/chart' ? { color: green[500] } : { color: green[0] }} />} iconPosition="start" label="접속 통계" value='/chart' sx={{fontWeight:'700'}}/>*/}
+                            <Tabs value={prob.pathValue} onChange={handleChange} aria-label="Main Tabs" sx={{marginLeft:'30px'}}>
+                                <Tab icon={<PeopleAltIcon sx={prob.pathValue === '/home' ? { color: green[500] } : { color: green[0] }}/>} iconPosition='start' onClick={()=> handleChange('/home')} value='/home' label='사용자 관리' sx={{fontWeight:'700'}}/>
+                                <Tab icon={<LoginIcon sx={prob.pathValue === '/log' ? { color: green[500] } : { color: green[0] }} />} iconPosition="start" onClick={()=> handleChange('/log')} value='/log' label="접속 로그" sx={{fontWeight:'700'}}/>
+                                <Tab icon={<BarChartIcon sx={prob.pathValue === '/chart' ? { color: green[500] } : { color: green[0] }} />} iconPosition="start" onClick={()=> handleChange('/chart')} value='/chart' label="접속 통계" sx={{fontWeight:'700'}}/>
                             </Tabs>
-                        </Toolbar>
+                            </Toolbar>
                     </Box>
                     {cookies.key && <Box sx={{width:'400px',textAlign:'center'}}>
                         <IconButton
@@ -119,7 +93,7 @@ const Header = () => {
                             aria-haspopup="true"
                             color="inherit"
                         >
-                            <PermIdentityIcon/>
+                            <PermIdentityIcon />
                             <span style={{'fontSize':'14px', 'marginLeft': '2px', 'color':'#666666'}}>
                                 {cookies.name}
                             </span>

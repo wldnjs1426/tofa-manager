@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { decrement, increment } from "../../reducers/counter";
 import { useCookies } from 'react-cookie'; //
+import API  from '../../static/js/API'
 
 const Img = styled.img`
     width: 179px;
@@ -84,8 +85,8 @@ const buttonTheme = createTheme({
 
 
 
-const Login = () => {
-
+const Login = (prob) => {
+    
     // dispatch를 사용하기 위한 준비
     const dispatch = useDispatch();
 
@@ -98,7 +99,7 @@ const Login = () => {
         dispatch(increment());
     }
 
-    const [cookies, setCookie] = useCookies(['key']); // 쿠키 훅
+    const [cookies, setCookie] = useCookies(); // 쿠키 훅
 
     useEffect(() =>{
         if(cookies.key){
@@ -114,20 +115,19 @@ const Login = () => {
     const [value,setValue] = useState('/home')
 
     const loginCheck = () => {
-        axios.post(`https://humetro-api.tofa.kr/api/admin/login`,{
+        axios.post(`${API}/api/admin/login`,{
             "userId":id,
             "password":password
         })
             .then(function (response) {
-                // localStorage.setItem('key',response.data.access_key)
-                // localStorage.setItem('name',response.data.username)
-                setCookie('key', response.data.access_key);
-                setCookie('name', response.data.username);
-
-
+                if(response.data.result === "500"){
+                    alert('존재하지 않는 아이디이거나 비밀번호가 일치하지 않습니다.')
+                    return
+                }
+                setCookie('key', response.data.access_key,{ path: '/' });
+                setCookie('name', response.data.username,{ path: '/' });
                 navigate(`${value}`);
-                // window.location.reload();
-
+                prob.pathSetValue('/home')
             })
             .catch(function (error) {
                 alert('존재하지 않는 아이디이거나 비밀번호가 일치하지 않습니다.')

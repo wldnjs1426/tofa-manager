@@ -22,9 +22,8 @@ import {
 } from '@mui/x-data-grid-premium';
 import { useCookies } from 'react-cookie';
 import PieChartData from './PieChartData'
-import API  from '../../static/js/API'
-
 import axios from 'axios'
+import API  from '../../static/js/API'
 
 
 const GridDiv = styled.div`
@@ -93,7 +92,7 @@ const ChartDiv = styled.div`
 `
 const columns = [
     { field: 'id', headerName: '순번', width: 100},
-    { field: 'name', headerName: '접속자명', width: 200 },
+    { field: 'name', headerName: '접속부서', width: 200 },
     { field: 'cnt', headerName: '건수', width: 150 },
 ];
 
@@ -104,7 +103,7 @@ const dateFormater = (date) => {
     return dateFormat2;
 }
 
-const Chart = () => {
+const ChartDept = () => {
     const [cookies, setCookie, removeCookie] = useCookies(['key']);
 
     const navigate = useNavigate();
@@ -128,41 +127,38 @@ const Chart = () => {
         }
 
 
-        axios.post(`${API}/stat/top10-user`,{
+        axios.post(`${API}/stat/top10-dept`,{
             "startDate":startDate,
             "endDate":endDate,
             "access_key": cookies.key,
             "dept":department
         })
             .then(function (response) {
+
                 const data = response.data.list
                 const chartRows = []
                 const gridRows = []
+                console.log(data)
+
                 data.map((item, idx) => {
                     chartRows.push({
-                        name: item.username,
+                        name: item.dept,
                         value: item.cnt
                     })
 
                     gridRows.push({
                         id: idx+1,
-                        name: item.username,
+                        name: item.dept,
                         cnt: item.cnt,
-                        dept: item.dept
                     })
                 })
-                
                 setRows(gridRows)
                 setChartState(chartRows)
-
-
-
             })
             .catch(function (error) {
                 console.log(error);
             });
     },[startDate,endDate,department])
-
 
     return (
 <>
@@ -262,7 +258,7 @@ const Chart = () => {
             />
         </div>
         <div style={{ width:'65%', height:'550px',backgroundColor:'#F6F6F6' }}>
-            <PieChartData data={chartState} title={'접속사용자 TOP10'}/>
+            <PieChartData data={chartState} title={'접속부서 TOP10'}/>
 
         </div>
     </ChartDiv>
@@ -273,4 +269,4 @@ const Chart = () => {
     )
 }
 
-export default Chart;
+export default ChartDept;

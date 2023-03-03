@@ -14,6 +14,7 @@ import UserHeader from './UserHeader';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
+import API  from '../../static/js/API'
 
 
 
@@ -98,7 +99,7 @@ const Home = () => {
             navigate(`/`);
         }
 
-        axios.post(`https://humetro-api.tofa.kr/api/admin/wait-list`,{
+        axios.post(`${API}/api/admin/wait-list`,{
             "startDate":"",
             "endDate":"",
             "access_key":cookies.key
@@ -134,7 +135,7 @@ const Home = () => {
             alert('사용자를 선택해 주세요')
             return
         }
-        axios.post(`https://humetro-api.tofa.kr/api/admin/approval-join`,{
+        axios.post(`${API}/api/admin/approval-join`,{
             "account_ids":userCheck.join(),
             "access_key":cookies.key
         })
@@ -153,12 +154,12 @@ const Home = () => {
             return
         }
 
-        axios.post(`https://humetro-api.tofa.kr/api/admin/removal-account`,{
+        axios.post(`${API}/api/admin/removal-account`,{
             "account_ids":userCheck.join(),
             "access_key":cookies.key
         })
             .then(function (response) {
-                alert('가입 거절이 완료되었습니다.')
+                alert('선택하신 회원이 삭제 되었습니다.')
                 setModify(modify ? false : true)
             })
             .catch(function (error) {

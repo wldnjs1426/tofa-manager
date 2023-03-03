@@ -29,6 +29,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import API  from '../../static/js/API'
 
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
@@ -58,18 +59,18 @@ const ButtonDiv = styled.div`
     display:flex;
     justify-content: space-around;
     align-items:center;
-    width:30%;
+    width:50%;
     height:100px;
     margin:0 auto;
 `
 const ModalDiv = styled.div`
-    width:1200px;
-    height:771px;
+    width:1000px;
+    height:700px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     background-color:white;
-    border:5px solid black;
+    border:2px solid black;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -181,6 +182,9 @@ const UserList = () => {
     const [row, setRow] = useState([]);
     //상세정보 권한 목록 체크박스 값 리스트 state
     const [checkedList, setCheckedList] = useState([]);
+    const [role,setRole] = useState();
+    const [phone,setPhone] = useState();
+    const [dept,setDept] = useState();
     //상세정보 값 저장 state
     const [status, setStatus] = useState(false);
     //수정했을시 row data다시 받기
@@ -188,23 +192,33 @@ const UserList = () => {
 
     useEffect(() =>{
 
-        if(!cookies.key){
-            alert('로그인이 필요합니다.')
-            navigate(`/`);
-        }
-
-        axios.post(`https://humetro-api.tofa.kr/api/admin/info-list`,
+        // if(!cookies.key){
+        //     alert('로그인이 필요합니다.')
+        //     navigate(`/`);
+        // }
+        console.log(cookies)
+        axios.post(`${API}/api/admin/info-list`,
             {
                 "searchType":"",
                 "searchText":"",
                 "access_key":cookies.key
             })
             .then(function (response) {
+                console.log(response)
                 const data = response.data
                 const rows = []
                 data.map((item,idx) => {
+                    let roleNum
+                    if(item.role_name === 'ROLE_ADMIN'){
+                        roleNum ='19'
+                    }else if(item.role_name === 'ROLE_MANAGER'){
+                        roleNum ='20'
+                    }else if(item.role_name === 'ROLE_USER'){
+                        roleNum ='21'
+                    }
                     rows.push({
                         id: item.account_id,
+                        roleNum:roleNum,
                         name: item.username,
                         belong: item.dept,
                         email: item.email,
@@ -225,8 +239,18 @@ const UserList = () => {
         }
     },[modify])
 
-
-
+    const handleChangeNum = (value) => {
+        const regex = /^[0-9\b]+$/;
+        if (value === "" || regex.test(value)) {
+            setPhone(value);
+        }
+    };
+    const handleChange = (event) => {
+        setRole(event.target.value);
+    };
+    const deptHandleChange = (event) => {
+        setDept(event.target.value);
+    }
 
     //레이어 팝업
     const handleClose = () => setOpen(false);
@@ -236,6 +260,9 @@ const UserList = () => {
         params
     ) => {
         setStatus(params.row)
+        setPhone(params.row.phone)
+        setRole(params.row.roleNum)
+        setDept(params.row.belong)
         setCheckedList(params.row.authorityCode.split(","))
         setOpen(true);
     };
@@ -254,10 +281,17 @@ const UserList = () => {
         const codeList = String(checkedList.join())
         const statusId = String(status.id)
 
-        axios.post(`https://humetro-api.tofa.kr/api/admin/member-modification`,
+        if(!phone){
+            alert('전화번호를 입력해 주십시오')
+            return
+        }
+        axios.post(`${API}/api/admin/member-modification`,
             {
                 "account_id":statusId,
                 "resourceCodeList":codeList,
+                "role":role,
+                "dept":dept,
+                "user_phone":phone,
                 "access_key":cookies.key
 
             })
@@ -276,22 +310,23 @@ const UserList = () => {
             alert('사용자를 선택해 주세요')
             return
         }
-
-        axios.post(`https://humetro-api.tofa.kr/api/admin/removal-account`,{
-            "account_ids":userId.join(),
-            "access_key":cookies.key
-        })
-            .then(function (response) {
-                alert('회원 삭제가 완료되었습니다.')
+        if (window.confirm("정말 삭제하시겠습니까?")) {
+            axios.post(`${API}/api/admin/removal-account`,{
+                "account_ids":userId.join(),
+                "access_key":cookies.key
+            }).then(function (response) {
+                alert('선택하신 회원이 삭제 되었습니다.')
                 setModify(modify ? false : true)
-            })
-            .catch(function (error) {
+            }).catch(function (error) {
                 console.log(error);
             });
-    }
+        } else {
+        }
 
+    }
     const columns = [
         { field: 'id', headerName: 'iD', width: 70, hide:true, hideable: false},
+        { field: 'roleNum', headerName: 'roleNum', width: 70, hide:true, hideable: false},
         { field: 'name', headerName: '이름', width: 200, renderCell: (params) => (
                 <strong onClick={() => handleEvent(params)} style={{cursor:'pointer'}}>
                     {params.row.name}
@@ -319,8 +354,8 @@ const UserList = () => {
                     aria-describedby="modal-modal-description"
                 >
                     <ModalDiv>
-                        <CloseDiv>
-                            <CloseIcon onClick={()=>handleClose()} sx={{width:'24px',height:'24px'}}/>
+                        <CloseDiv onClick={()=>handleClose()}>
+                            <CloseIcon  sx={{width:'24px',height:'24px'}}/>
                         </CloseDiv>
                        <div style={{
                            width:'90%',
@@ -357,6 +392,7 @@ const UserList = () => {
                                         sx={{width:'450px', height:'50%'}}
                                         defaultValue={status && status.belong}
                                         size='small'
+                                        onChange={deptHandleChange}
                                         >
                                             <MenuItem value={'차량'}>차량</MenuItem>
                                             <MenuItem value={'승무'}>승무</MenuItem>
@@ -384,9 +420,14 @@ const UserList = () => {
                                 </SubjectTd>
                                 <ContentsTd>
                                     <MarginDiv>
-                                        <TextField InputProps={{
-                                            readOnly: true,
-                                        }}  defaultValue={status && status.phone} size='small' sx={{width:'450px',height:'39px'}}/>
+                                        <TextField
+                                                   defaultValue={status && status.phone} size='small' sx={{width:'450px',height:'39px'}}
+                                                   inputProps={{ maxLength: 11 }}
+                                                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                                       handleChangeNum(event.target.value)
+                                                   }}
+                                                   value={phone}
+                                        />
                                     </MarginDiv>
                                 </ContentsTd>
                             </tr>
@@ -400,13 +441,13 @@ const UserList = () => {
                                     labelId="demo-customized-select-label"
                                     id="demo-customized-select"
                                     sx={{width:'450px', height:'50%'}}
-                                    defaultValue={status && status.authority}
+                                    defaultValue={status && status.roleNum}
                                     size='small'
-
+                                    onChange={handleChange}
                                         >
-                                    <MenuItem value={'ROLE_ADMIN'}>ADMIN</MenuItem>
-                                    <MenuItem value={'ROLE_MANAGER'}>MANAGER</MenuItem>
-                                    <MenuItem value={'ROLE_USER'}>USER</MenuItem>
+                                    <MenuItem value={'19'}>ADMIN</MenuItem>
+                                    <MenuItem value={'20'}>MANAGER</MenuItem>
+                                    <MenuItem value={'21'}>USER</MenuItem>
                                         </Select>
                                     </MarginDiv>
                                 </ContentsTd>
@@ -495,6 +536,11 @@ const UserList = () => {
                             checkboxSelection
                             onSelectionModelChange={(newSelectionModel) => {
                                 setUserId(newSelectionModel);
+                            }}
+                            initialState={{
+                                sorting: {
+                                    sortModel: [{ field: 'joinDate', sort: 'desc' }],
+                                },
                             }}
                             components={{ Toolbar: CustomToolbar }}
                             sx={{fontSize:'13px',borderTop: '3px solid #008CCF',borderBottomColor: '#008CCF',borderLeft:'none',borderRight:'none',}}

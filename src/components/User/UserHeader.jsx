@@ -21,8 +21,6 @@ const UserHeader = () => {
     const navigate = useNavigate();
 
     const [value, setValue] = useState(window.location.pathname);
-    console.log(value)
-    console.log(window.location.pathname)
 
     const userHandleChange = (newValue) => {
         setValue(newValue);
